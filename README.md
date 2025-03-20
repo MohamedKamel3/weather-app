@@ -15,7 +15,7 @@
         • <a href="#api-integration">API Integration</a>
         • <a href="#installation">Installation & Setup</a>
         
-    </p>
+ </p>
     
 <img src="screenshot.png" alt="Main" width="200">
     <img src="Screenshot 2025-03-02 185434.png" alt="First" width="200">
