@@ -24,7 +24,7 @@
   <h1>🌤 Kotlin Weather App</h1>
     <p>This is a modern Weather App built using <strong>Kotlin</strong>, integrating <strong>Tomorrow.io API</strong> with <strong>Retrofit</strong>. The UI is designed in <strong>Figma</strong> and follows MVVM architecture for clean and maintainable code.</p>
     
-  ##📌 Key Features
+  📌## Key Features
     <ul>
         <li><strong>Real-Time Weather Data:</strong> Temperature, humidity, wind speed, visibility.</li>
         <li><strong>Hourly & 5-Day Forecast:</strong> View upcoming weather conditions.</li>
