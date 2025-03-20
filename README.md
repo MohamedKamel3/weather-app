@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
- <img src="app/src/main/res/drawable/baklava_team.png" alt="Markdownify" width="300" ></img>
+ <img src="app/src/main/res/drawable/baklava_team.png" alt="Baklava" width="300" ></img>
 </h1>
 <h1 align="center">
  Kotlin Weather App by ( Baklava Team )
@@ -18,7 +18,7 @@
 
 ## Figma Design 
 
- <img src="app/src/main/res/drawable/Screenshot 2025-03-20 233120.png" alt="first" width="200" ></img>
+ <img src="app/src/main/res/drawable/Screenshot 2025-03-20 233120.png" alt="first" ></img>
 
 ## Key Features
 
