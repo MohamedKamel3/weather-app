@@ -2,7 +2,7 @@
 <html>
 <body>
      <h1 align="center">
-        App Still in development 
+        App is not completed ❗❗
     </h1> 
      <h1 align="center">
        ( Baklava Team )
