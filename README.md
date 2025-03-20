@@ -9,6 +9,7 @@
 <p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
+   <a href="#how-to-use">Figma Design</a> •
 </p>
 
  <img src="Screenshot 2025-03-02 185413.png" alt="Main" width="200" ></img>
