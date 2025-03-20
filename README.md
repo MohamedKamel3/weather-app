@@ -7,7 +7,7 @@
  Kotlin Weather App by ( Baklava Team )
 </h1>
 <p align="center">
-   • <a href="#figma-design">Figma Design</a>
+   • <a href="#📌figma-design">Figma Design</a>
    • <a href="#key-features">Key Features</a>
    • <a href="#how-to-use">How To Use</a>
   </p>
@@ -24,7 +24,7 @@
   <h1>🌤 Kotlin Weather App</h1>
     <p>This is a modern Weather App built using <strong>Kotlin</strong>, integrating <strong>Tomorrow.io API</strong> with <strong>Retrofit</strong>. The UI is designed in <strong>Figma</strong> and follows MVVM architecture for clean and maintainable code.</p>
     
-   <h2>📌 Key Features</h2>
+  ##📌 Key Features
     <ul>
         <li><strong>Real-Time Weather Data:</strong> Temperature, humidity, wind speed, visibility.</li>
         <li><strong>Hourly & 5-Day Forecast:</strong> View upcoming weather conditions.</li>
@@ -34,7 +34,7 @@
         <li><strong>Animations:</strong> Smooth UI interactions with Lottie & MotionLayout.</li>
     </ul>
     
-  <h2>🛠 Tech Stack & Tools</h2>
+ ##🛠 Tech Stack & Tools
     <ul>
         <li><strong>Development:</strong> Kotlin, Android Studio, Jetpack Compose/XML</li>
         <li><strong>Networking:</strong> Retrofit + Gson, OkHttp</li>
@@ -45,7 +45,7 @@
         <li><strong>CI/CD:</strong> Firebase Crashlytics, Fastlane</li>
     </ul>
     
-   <h2>🛠 How It Works</h2>
+   ##🛠 How It Works
     <ol>
         <li><strong>Launch the App:</strong> Fetches current location & weather.</li>
         <li><strong>View Weather Details:</strong> Displays temperature, wind speed, and humidity.</li>
@@ -54,7 +54,7 @@
         <li><strong>Toggle Units:</strong> Switch between °C & °F.</li>
     </ol>
     
-  <h2>📂 API Integration (Retrofit Example)</h2>
+ ##📂 API Integration (Retrofit Example)
     <pre>
 <code>
 interface WeatherService {
@@ -64,7 +64,7 @@ interface WeatherService {
     </code>
     </pre>
     
-  <h2>🚀 Installation & Setup</h2>
+ ##🚀 Installation & Setup
     <ol>
         <li>Clone this repository: <code>git clone https://github.com/your-repo.git</code></li>
         <li>Open in Android Studio.</li>
