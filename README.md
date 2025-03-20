@@ -72,25 +72,6 @@ interface WeatherService {
         <li>Run the project on an emulator or physical device.</li>
     </ol>
 
-## Key Features
-
-* Basic Arithmetic Operations: The calculator supports basic arithmetic operations such as addition, subtraction, multiplication, and division.
-* Numeric Keypad: It includes a standard numeric keypad with digits from 0 to 9.
-* Simple Interface: The interface is straightforward, displaying the current input and result clearly.
-* Real-time Calculation: As seen in the second screenshot, the calculator updates the display in real-time as numbers and operations are entered.
-
-
-## How To Use
-
-unzip it and run main file ❤️
-
-
-* Entering Numbers: Tap the numeric buttons (0-9) to input numbers.
-* Performing Operations: Use the appropriate operation buttons (+, -, *, /) to perform calculations.
-* Viewing Results: The result of the calculation is displayed at the top of the screen. For example, in the second screenshot, "91+7" is shown, indicating that the user has entered 91 and is adding 7 to it.
-* Clearing Input: Although not visible in the screenshots, typically, there would be a clear (C) button to reset the input or clear the current calculation.
-* This calculator is designed for basic calculations, making it easy to use for everyday arithmetic tasks.
-
 
 ## Support
 
