@@ -10,7 +10,11 @@
 <p align="center">
         • <a href="#figma-design">Figma Design</a>
         • <a href="#key-features">Key Features</a>
-        • <a href="#how-it-works">How To Use</a>
+        • <a href="#tech-stack">Tech Stack & Tools</a>
+        • <a href="#how-it-works">How To Use</a>    
+        • <a href="#api-integration">API Integration</a>
+        • <a href="#installation">Installation & Setup</a>
+        
     </p>
     
 <img src="Screenshot 2025-03-02 185413.png" alt="Main" width="200">
