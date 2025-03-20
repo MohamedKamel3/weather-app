@@ -17,7 +17,7 @@
         
     </p>
     
-<img src="Screenshot 2025-03-02 185413.png" alt="Main" width="200">
+<img src="screenshot.png" alt="Main" width="200">
     <img src="Screenshot 2025-03-02 185434.png" alt="First" width="200">
     <img src="Screenshot 2025-03-12 220851.png" alt="Second" width="200">
     
