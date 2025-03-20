@@ -7,9 +7,9 @@
  Kotlin Weather App by ( Baklava Team )
 </h1>
 <p align="center">
-   <a href="#figma-design">Figma Design</a> •
-  <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
+   • <a href="#figma-design">Figma Design</a>
+   • <a href="#key-features">Key Features</a>
+   • <a href="#how-to-use">How To Use</a>
   </p>
 
  <img src="Screenshot 2025-03-02 185413.png" alt="Main" width="200" ></img>
