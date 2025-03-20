@@ -3,12 +3,15 @@
 <body>
      <h1 align="center">
         App Still in development 
+    </h1> 
+     <h1 align="center">
+       ( Baklava Team )
     </h1>
     <h1 align="center">
         <br>
         <img src="app/src/main/res/drawable/baklava_team.png" alt="Baklava" width="300">
     </h1>
-    <h1 align="center">Kotlin Weather App by ( Baklava Team )</h1>
+    <h1 align="center">Kotlin Weather App</h1>
     
 <p align="center">
         • <a href="#figma-design">Figma Design</a>
