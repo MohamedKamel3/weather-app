@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
 <body>
+     <h1 align="center">
+         ❗❗ App is not completed ❗❗
+    </h1> 
+     <h1 align="center">
+       ( Baklava Team )
+    </h1>
     <h1 align="center">
         <br>
         <img src="app/src/main/res/drawable/baklava_team.png" alt="Baklava" width="300">
     </h1>
-    <h1 align="center">Kotlin Weather App by ( Baklava Team )</h1>
+    <h1 align="center">Kotlin Weather App</h1>
     
 <p align="center">
         • <a href="#figma-design">Figma Design</a>
@@ -15,14 +21,14 @@
         • <a href="#api-integration">API Integration</a>
         • <a href="#installation">Installation & Setup</a>
         
-    </p>
+ </p>
     
-<img src="Screenshot 2025-03-02 185413.png" alt="Main" width="200">
+<img src="screenshot.png" alt="Main" width="200">
     <img src="Screenshot 2025-03-02 185434.png" alt="First" width="200">
     <img src="Screenshot 2025-03-12 220851.png" alt="Second" width="200">
     
 <h2 id="figma-design">Figma Design</h2>
-    <img src="app/src/main/res/drawable/Screenshot 2025-03-20 233120.png" alt="Design">
+    <img src="app/src/main/res/drawable/screenshot.png" alt="Design">
     
  <h2 id="key-features">📌 Key Features</h2>
     <ul>
@@ -30,7 +36,6 @@
         <li><strong>Hourly & 5-Day Forecast:</strong> View upcoming weather conditions.</li>
         <li><strong>Search & Multiple Locations:</strong> Find weather for different cities.</li>
         <li><strong>Offline Access:</strong> Stores weather data using Room Database.</li>
-        <li><strong>Dark & Light Mode:</strong> Adaptive UI with Material Design 3.</li>
         <li><strong>Animations:</strong> Smooth UI interactions with Lottie & MotionLayout.</li>
     </ul>
     
@@ -38,11 +43,9 @@
     <ul>
         <li><strong>Development:</strong> Kotlin, Android Studio, Jetpack Compose/XML</li>
         <li><strong>Networking:</strong> Retrofit + Gson, OkHttp</li>
-        <li><strong>State Management:</strong> MVVM, LiveData, StateFlow</li>
+        <li><strong>State Management:</strong> MVVM, LiveData</li>
         <li><strong>Storage:</strong> Room Database, DataStore</li>
         <li><strong>Location Services:</strong> FusedLocationProviderClient</li>
-        <li><strong>Testing:</strong> JUnit, Espresso</li>
-        <li><strong>CI/CD:</strong> Firebase Crashlytics, Fastlane</li>
     </ul>
     
 <h2 id="how-it-works">🛠 How It Works</h2>
@@ -72,11 +75,5 @@ interface WeatherService {
         <li>Run the project on an emulator or physical device.</li>
     </ol>
     
- <h2 id="support">📢 Support</h2>
-    <p>If you find this project helpful, consider supporting:</p>
-    <a href="https://buymeacoffee.com/mohamedmkaj" target="_blank">
-        <img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" 
-             style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;">
-    </a>
 </body>
 </html>
