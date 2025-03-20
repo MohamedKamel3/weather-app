@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <body>
+     <h1 align="center">
+        App Still in development 
+    </h1>
     <h1 align="center">
         <br>
         <img src="app/src/main/res/drawable/baklava_team.png" alt="Baklava" width="300">
@@ -30,7 +33,6 @@
         <li><strong>Hourly & 5-Day Forecast:</strong> View upcoming weather conditions.</li>
         <li><strong>Search & Multiple Locations:</strong> Find weather for different cities.</li>
         <li><strong>Offline Access:</strong> Stores weather data using Room Database.</li>
-        <li><strong>Dark & Light Mode:</strong> Adaptive UI with Material Design 3.</li>
         <li><strong>Animations:</strong> Smooth UI interactions with Lottie & MotionLayout.</li>
     </ul>
     
@@ -38,11 +40,9 @@
     <ul>
         <li><strong>Development:</strong> Kotlin, Android Studio, Jetpack Compose/XML</li>
         <li><strong>Networking:</strong> Retrofit + Gson, OkHttp</li>
-        <li><strong>State Management:</strong> MVVM, LiveData, StateFlow</li>
+        <li><strong>State Management:</strong> MVVM, LiveData</li>
         <li><strong>Storage:</strong> Room Database, DataStore</li>
         <li><strong>Location Services:</strong> FusedLocationProviderClient</li>
-        <li><strong>Testing:</strong> JUnit, Espresso</li>
-        <li><strong>CI/CD:</strong> Firebase Crashlytics, Fastlane</li>
     </ul>
     
 <h2 id="how-it-works">🛠 How It Works</h2>
