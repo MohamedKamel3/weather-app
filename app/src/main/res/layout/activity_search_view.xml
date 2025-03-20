@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SearchView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="16sp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/backbutton"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="20sp"
+                android:background="@drawable/rounded_bg"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Search"
+                    android:src="@drawable/img"
+                    app:tint="@android:color/black" />
+
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/bb"
+                android:layout_width="320dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/box2"
+                android:drawableStart="@drawable/img_1"
+                android:gravity="center"
+                android:hint="Search location .."
+                android:paddingStart="20dp" />
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/forecast_10day"
+
+            />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <!-- *************  App Bar  ************* -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20sp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/AppName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20sp"
+                android:text="Weather App"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/temp_change_button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="20sp"
+                android:background="@drawable/rounded_bg"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/search_button"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="Search"
+                    android:text="°F"
+                    android:textColor="#666666"
+                    android:textSize="27sp"
+                    app:tint="@android:color/black" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/search_button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="20sp"
+                android:background="@drawable/rounded_bg"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Search"
+                    android:src="@android:drawable/ic_menu_search"
+                    app:tint="@android:color/black" />
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ************* Now Card  ************* -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/TempInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:background="@color/black"
+            app:cardBackgroundColor="#161616"
+            app:cardCornerRadius="40sp"
+            app:cardElevation="10dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="22dp">
+
+                <!-- ************* Now Day Month  ************* -->
+                <TextView
+                    android:id="@+id/TempDayMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Monday, 13 Feb" />
+
+                <!-- ************* Now Location  ************* -->
+                <TextView
+                    android:id="@+id/TempLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/TempDayMonth"
+                    tools:text="Cairo" />
+
+                <!-- ************* Now Temperature  ************* -->
+                <TextView
+                    android:id="@+id/TempValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:textColor="@color/white"
+                    android:textSize="60sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/TempLocation"
+                    tools:text="29°c" />
+
+                <!-- ************* Now Describe  ************* -->
+                <TextView
+                    android:id="@+id/TempDescribe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/TempImage"
+                    app:layout_constraintStart_toStartOf="@id/TempImage"
+                    app:layout_constraintTop_toBottomOf="@id/TempValue"
+                    tools:text="Sunny Cloudy" />
+
+                <!-- ************* Now H  ************* -->
+                <TextView
+                    android:id="@+id/TempHValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginEnd="15sp"
+                    android:textColor="#ffffff"
+                    android:textSize="19sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/TempValue"
+                    tools:text="h: 25°c" />
+
+                <!-- ************* Now L  ************* -->
+                <TextView
+                    android:id="@+id/TempLValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:textColor="#ffffff"
+                    android:textSize="19sp"
+                    app:layout_constraintEnd_toEndOf="@id/TempDayMonth"
+                    app:layout_constraintStart_toEndOf="@id/TempHValue"
+                    app:layout_constraintTop_toBottomOf="@id/TempValue"
+                    tools:text="L: 17°c" />
+
+                <!-- ************* Now Image  ************* -->
+                <ImageView
+                    android:id="@+id/TempImage"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:layout_marginRight="20sp"
+                    app:layout_constraintBottom_toTopOf="@id/TempDescribe"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- *************  Temperature  ************* -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24sp"
+            android:layout_marginBottom="14sp"
+            android:text="Temperature"
+            android:textColor="#4b4a4b"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <!-- *************  Hourly Temp  ************* -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/Temp_RV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/tempcard" />
+
+        <!-- *************  Wind and Humidity  ************* -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <!-- *************  Wind Card  ************* -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/WindCard"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_marginEnd="15sp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="#161616"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/HumidityCard"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <!-- *************  Wind Icon  ************* -->
+                    <ImageView
+                        android:id="@+id/windIcon"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_marginEnd="10sp"
+                        android:src="@drawable/air"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/WindTitle"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  Wind Text  ************* -->
+                    <TextView
+                        android:id="@+id/WindTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="Wind"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  Wind Speed  ************* -->
+                    <TextView
+                        android:id="@+id/WindSpeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:text="Speed:"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/WindTitle" />
+
+                    <!-- *************  Wind Speed Value  ************* -->
+                    <TextView
+                        android:id="@+id/WindSpeedValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/WindTitle"
+                        app:layout_constraintTop_toBottomOf="@id/WindTitle"
+                        tools:text=" 4.1 m/s" />
+
+                    <!-- *************  Wind Direction  ************* -->
+                    <TextView
+                        android:id="@+id/WindDirection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:text="Direction:"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/WindSpeed" />
+
+                    <!-- *************  Wind Direction Value  ************* -->
+                    <TextView
+                        android:id="@+id/WindDirectionValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/WindTitle"
+                        app:layout_constraintTop_toBottomOf="@id/WindSpeed"
+                        tools:text="80°" />
+
+                    <!-- *************  Wind Gust  ************* -->
+                    <TextView
+                        android:id="@+id/WindGust"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:text="Gust:"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/WindDirection" />
+
+                    <!-- *************  Wind Gust Value  ************* -->
+                    <TextView
+                        android:id="@+id/WindGustValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/WindTitle"
+                        app:layout_constraintTop_toBottomOf="@id/WindDirection"
+                        tools:text="7.3 m/s" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- *************  Humidity Card  ************* -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/HumidityCard"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="#161616"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/WindCard"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <!-- *************  Humidity Icon  ************* -->
+                    <ImageView
+                        android:id="@+id/HumidityIcon"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_marginEnd="10sp"
+                        android:src="@drawable/water_drop"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/HumidityTitle"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  Humidity Title  ************* -->
+                    <TextView
+                        android:id="@+id/HumidityTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="18sp"
+                        android:text="Humidity"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  Humidity Value  ************* -->
+                    <TextView
+                        android:id="@+id/HumidityValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10sp"
+                        android:textColor="@android:color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="74%" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- *************  RainIntensity and Visibility  ************* -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <!-- *************  RainIntensity  ************* -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/RainIntensityCard"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_marginEnd="15sp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="#161616"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/VisibilityCard"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <!-- *************  RainIntensity Icon  ************* -->
+                    <ImageView
+                        android:id="@+id/RainIntensityIcon"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:src="@drawable/rainy"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/RainIntensityTitle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  RainIntensity  Title ************* -->
+                    <TextView
+                        android:id="@+id/RainIntensityTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10sp"
+                        android:text="Rain Intensity"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/RainIntensityIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  RainIntensity Value  ************* -->
+                    <TextView
+                        android:id="@+id/RainIntensityValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:textColor="@android:color/white"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="1 mm/hr" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- *************  Visibility Card  ************* -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/VisibilityCard"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="#161616"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/RainIntensityCard"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <!-- *************  Visibility Icon  ************* -->
+                    <ImageView
+                        android:id="@+id/VisibilityIcon"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_marginEnd="10sp"
+                        android:src="@drawable/visibility"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/VisibilityTitle"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  Visibility Title  ************* -->
+                    <TextView
+                        android:id="@+id/VisibilityTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20sp"
+                        android:text="Visibility"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- *************  Visibility Value  ************* -->
+                    <TextView
+                        android:id="@+id/VisibilityValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="74%" />
+
+                    <!-- *************  Visibility Desc ************* -->
+                    <TextView
+                        android:id="@+id/VisibilityDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/VisibilityValue"
+                        tools:text="Perfectly clear view" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- *************  5-day Forecast Card  ************* -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/Forecast_10Day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            app:cardBackgroundColor="#161616"
+            app:cardCornerRadius="40sp"
+            app:cardElevation="10dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5-Day Forecast"
+                    android:textColor="#ffffff"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/Forecast_10Day_RV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView"
+                    tools:listitem="@layout/forecast_10day"
+
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
