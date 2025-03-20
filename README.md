@@ -23,9 +23,8 @@
         
  </p>
     
-<img src="screenshot.png" alt="Main" width="200">
-    <img src="Screenshot 2025-03-02 185434.png" alt="First" width="200">
-    <img src="Screenshot 2025-03-12 220851.png" alt="Second" width="200">
+
+   
     
 <h2 id="figma-design">Figma Design</h2>
     <img src="app/src/main/res/drawable/screenshot.png" alt="Design">
