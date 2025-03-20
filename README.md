@@ -68,7 +68,7 @@ interface WeatherService {
     <ol>
         <li>Clone this repository: <code>git clone https://github.com/your-repo.git</code></li>
         <li>Open in Android Studio.</li>
-        <li>Add your <strong>Tomorrow.io API Key</strong> in <code>gradle.properties</code>.</li>
+        <li>Add your <strong>Tomorrow.io API Key</strong> in <code>MainActivity</code>.</li>
         <li>Run the project on an emulator or physical device.</li>
     </ol>
     
