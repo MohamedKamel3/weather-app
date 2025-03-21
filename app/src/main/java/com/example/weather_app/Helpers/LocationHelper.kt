@@ -1,4 +1,4 @@
-package com.example.weather_app.utils
+package com.example.weather_app.Helpers
 
 import android.Manifest
 import android.content.pm.PackageManager

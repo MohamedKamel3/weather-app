@@ -1,6 +1,5 @@
 package com.example.weather_app
 
-import SharedPrefHelper
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.weather_app.Adapters.WeatherAdapter
+import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
-import com.example.weather_app.tools.addWeatherIfNotExists
+import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
@@ -33,7 +33,14 @@ class SearchView : AppCompatActivity() {
             insets
         }
 
-        binding.recycler.adapter = WeatherAdapter(this, SharedPrefHelper.getWeatherList(this))
+        binding.recycler.adapter = WeatherAdapter(this, SharedPrefHelper.getWeatherList(this)) {
+            val intent = Intent(this, MainActivity::class.java)
+            val gson = Gson()
+            val json = gson.toJson(it.fullData)
+            intent.putExtra("FULL_DATA", json)
+            startActivity(intent)
+            finish()
+        }
 
         binding.backbutton.setOnClickListener {
             finish()
@@ -50,15 +57,12 @@ class SearchView : AppCompatActivity() {
                     // Check if the touch is within the drawableStart area
                     if (touchX <= (binding.SeachED.left + drawableWidth + binding.SeachED.paddingStart)) {
                         val cityName = binding.SeachED.text.toString().trim()
-
                         if (cityName.isNotEmpty()) {
-
-                            addWeatherIfNotExists(this, newWeatherData)
-
-                            val intent = Intent()
-                            intent.putExtra("CITY_NAME", cityName)
-                            setResult(RESULT_OK, intent)
-
+                            val intent = Intent(this, MainActivity::class.java)
+                            val gson = Gson()
+                            val json = gson.toJson(cityName)
+                            intent.putExtra("CITY_NAME", json)
+                            startActivity(intent)
                             finish()
                         }
                         return@setOnTouchListener true
@@ -68,24 +72,5 @@ class SearchView : AppCompatActivity() {
             false
         }
 
-//        // 🔹 عند البحث عن مدينة جديدة
-//        binding.searchButton.setOnClickListener {
-//            val cityName = binding.searchInput.text.toString().trim()
-//
-//            if (cityName.isNotEmpty()) {
-//                // 1️⃣ حفظ المدينة الجديدة في SharedPreferences
-//                val newWeatherData =
-//                    WeatherData(cityName, 0, "Loading...") // البيانات ستتحدث لاحقًا
-//                addWeatherIfNotExists(this, newWeatherData)
-//
-//                // 2️⃣ إرسال اسم المدينة إلى MainActivity
-//                val intent = Intent()
-//                intent.putExtra("CITY_NAME", cityName)
-//                setResult(RESULT_OK, intent)
-//
-//                // 3️⃣ إغلاق SearchView والعودة إلى MainActivity
-//                finish()
-//            }
-//        }
     }
 }

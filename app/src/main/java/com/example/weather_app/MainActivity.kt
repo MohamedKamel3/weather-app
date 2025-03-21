@@ -1,17 +1,19 @@
 package com.example.weather_app
 
-import SharedPrefHelper
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.weather_app.Helpers.LocationHelper
+import com.example.weather_app.Helpers.SharedPrefHelper
+import com.example.weather_app.Models.FullData
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.network.WeatherRepository
-import com.example.weather_app.utils.LocationHelper
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -44,14 +46,28 @@ class MainActivity : AppCompatActivity() {
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, binding)
 
-        locationHelper.requestLocationPermission {
-            locationHelper.getCurrentLocation { lat, lon ->
-                weatherRepository.fetchWeatherData(lat, lon) { weatherData ->
+        if (intent.hasExtra("FULL_DATA")) {
+            val json = intent.getStringExtra("FULL_DATA")
+            json?.let {
+                val fullData = Gson().fromJson(it, FullData::class.java)
+                updateUI(this, binding, fullData)
+            }
+        } else if (intent.hasExtra("CITY_NAME")) {
+            val cityName = intent.getStringExtra("CITY_NAME")
+            cityName?.let {
+                weatherRepository.fetchWeatherByCity(it) { weatherData ->
                     weatherData?.let { updateUI(this, binding, it) }
                 }
             }
+        } else {
+            locationHelper.requestLocationPermission {
+                locationHelper.getCurrentLocation { lat, lon ->
+                    weatherRepository.fetchWeatherData(lat, lon) { weatherData ->
+                        weatherData?.let { updateUI(this, binding, it) }
+                    }
+                }
+            }
         }
-
         applyGradientToTemperatureText(binding.TempValue)
 
         binding.searchButton.setOnClickListener {
@@ -59,23 +75,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
     }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SEARCH_REQUEST_CODE && resultCode == RESULT_OK) {
-            val cityName = data?.getStringExtra("CITY_NAME")
-
-            cityName?.let {
-                // 🔹 جلب بيانات الطقس للمدينة الجديدة
-                weatherRepository.fetchWeatherByCity(it) { weatherData ->
-                    weatherData?.let { updateUI(this, binding, it) }
-                }
-            }
-        }
-    }
-
-    companion object {
-        private const val SEARCH_REQUEST_CODE = 100
-    }
+    
 }

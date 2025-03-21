@@ -1,3 +1,5 @@
+package com.example.weather_app.Helpers
+
 import android.content.Context
 import com.example.weather_app.Models.WeatherData
 import com.google.gson.Gson
@@ -21,21 +23,6 @@ object SharedPrefHelper {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val json = sharedPref.getString(SEARCH_HISTORY_KEY, "[]") // Default to empty list
         val type = object : TypeToken<List<WeatherData>>() {}.type
-        return Gson().fromJson(json, type)
-    }
-
-    fun saveCityName(context: Context, cityName: List<String>) {
-        val sharedPref = context.getSharedPreferences(CITY_PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        val json = Gson().toJson(cityName)
-        editor.putString(SEARCH_HISTORY_KEY, json)
-        editor.apply()
-    }
-
-    fun getCityName(context: Context): List<String> {
-        val sharedPref = context.getSharedPreferences(CITY_PREFS_NAME, Context.MODE_PRIVATE)
-        val json = sharedPref.getString(SEARCH_HISTORY_KEY, "[]") // Default to empty list
-        val type = object : TypeToken<List<String>>() {}.type
         return Gson().fromJson(json, type)
     }
 

@@ -1,10 +1,10 @@
 package com.example.weather_app.utils
 
-import SharedPrefHelper
 import android.app.Activity
 import android.content.Context
 import com.example.weather_app.Adapters.Forecast_Adapter
 import com.example.weather_app.Adapters.TempCard_Adapter
+import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.Models.VDaysForecast
 import com.example.weather_app.Models.WeatherData
@@ -26,16 +26,17 @@ fun updateUI(
     val DaysList = arrayListOf<VDaysForecast>()
 
     var lat = 0.0
-    var log = 0.0
+    var lon = 0.0
 
     val searchHistory = SharedPrefHelper.getWeatherList(context).toMutableList()
     var cityname = ""
     var dec = ""
     var img = 0
+
     if (weatherData.timelines.hourly.size > 2 && weatherData.timelines.minutely.size > 2) {
 
         lat = weatherData.location.lat
-        log = weatherData.location.lon
+        lon = weatherData.location.lon
 
         binding.TempDayMonth.text =
             parseDateTime(weatherData.timelines.hourly[2].date).formattedDateWithDay
@@ -45,11 +46,11 @@ fun updateUI(
             parseDateTime(weatherData.timelines.hourly[2].date).time24
         ).first
         binding.TempDescribe.text = dec
-        getFullLocationName(context, lat, log) { locationName ->
+        getFullLocationName(context, lat, lon) { locationName ->
             binding.TempLocation.text = locationName
         }
-        getLocationName(context, lat, log) {
-            cityname = it
+        getLocationName(context, lat, lon) { locationName ->
+            cityname = locationName
         }
         img = getWeatherStatus(
             weatherData.timelines.hourly[2].values.weatherCode.toInt(),
@@ -69,7 +70,11 @@ fun updateUI(
 
         val newhistory =
             WeatherData(
-                cityname, weatherData.timelines.hourly[2].values.temperature.toInt(), dec, img
+                weatherData,
+                cityname,
+                weatherData.timelines.hourly[2].values.temperature.toInt(),
+                dec,
+                img
             )
 
         addWeatherIfNotExists(context, newhistory)

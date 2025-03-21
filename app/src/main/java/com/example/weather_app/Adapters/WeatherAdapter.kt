@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.R
 
-class WeatherAdapter(val activity: Activity, val weatherList: List<WeatherData>) :
+class WeatherAdapter(
+    val activity: Activity,
+    val weatherList: List<WeatherData>,
+    val onItemClick: (WeatherData) -> Unit
+) :
     RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
 
     class WeatherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,6 +36,9 @@ class WeatherAdapter(val activity: Activity, val weatherList: List<WeatherData>)
         holder.temperature.text = "${weather.temperature}°C"
         holder.description.text = weather.description
         holder.icon.setImageResource(weather.icon)
+        holder.itemView.setOnClickListener {
+            onItemClick(weather)
+        }
     }
 
     override fun getItemCount(): Int = weatherList.size
