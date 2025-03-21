@@ -15,7 +15,7 @@
 
         <!-- Temperature -->
         <TextView
-            android:id="@+id/tvTemperature"
+            android:id="@+id/Temperature_TV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
@@ -36,7 +36,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/describe"
             app:layout_constraintEnd_toStartOf="@+id/imgWeatherIcon"
-            app:layout_constraintStart_toEndOf="@id/tvTemperature"
+            app:layout_constraintStart_toEndOf="@id/Temperature_TV"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Cairo" />
 
@@ -49,7 +49,7 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imgWeatherIcon"
-            app:layout_constraintStart_toEndOf="@id/tvTemperature"
+            app:layout_constraintStart_toEndOf="@id/Temperature_TV"
             app:layout_constraintTop_toBottomOf="@id/city"
             tools:text="Sunny" />
 
