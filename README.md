@@ -9,7 +9,7 @@
     </h1>
     <h1 align="center">
         <br>
-        <img src="app/src/main/res/drawable/baklava_team.png" alt="Baklava" width="300">
+        <img src="app/src/main/res/drawable/baklava_team.png" alt="Baklava" >
     </h1>
     <h1 align="center">Kotlin Weather App</h1>
     
