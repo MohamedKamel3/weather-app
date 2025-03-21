@@ -8,7 +8,7 @@ import com.example.searchdemo.database.CityDatabase
 class CityViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = CityDatabase.getInstance(application)
 
-    fun searchCities(c: City) = repository.cityDao().searchCities("${c.name},${c.country}")
+    fun searchCities(c: String) = repository.cityDao().searchCities(c)
 
-    fun insertCity(city: City) = repository.cityDao().insert(city)
+    fun insertCities(city: List<City>) = repository.cityDao().insertCities(city)
 }

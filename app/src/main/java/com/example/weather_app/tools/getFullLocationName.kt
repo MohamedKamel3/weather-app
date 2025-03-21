@@ -14,7 +14,6 @@ fun getFullLocationName(
     val geocoder = Geocoder(context, Locale.getDefault())
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        // ✅ Android 13+ (API 33 and above) - Use Async API
         geocoder.getFromLocation(latitude, longitude, 1, object : Geocoder.GeocodeListener {
             override fun onGeocode(addresses: MutableList<Address>) {
                 if (addresses.isNotEmpty()) {
@@ -27,7 +26,6 @@ fun getFullLocationName(
             }
         })
     } else {
-        // ✅ Android 12 and below (API < 33) - Use Synchronous API
         try {
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()) {

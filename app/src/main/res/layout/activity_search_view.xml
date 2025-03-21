@@ -39,15 +39,17 @@
 
             </FrameLayout>
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/Seach_ED"
                 android:layout_width="320dp"
                 android:layout_height="55dp"
                 android:layout_marginStart="10dp"
                 android:background="@drawable/box2"
+                android:completionThreshold="1"
                 android:drawableStart="@drawable/img_1"
                 android:gravity="center"
                 android:hint="Search location .."
+                android:inputType="text"
                 android:paddingStart="20dp" />
 
         </LinearLayout>

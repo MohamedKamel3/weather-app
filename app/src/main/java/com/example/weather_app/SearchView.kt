@@ -1,20 +1,26 @@
 package com.example.weather_app
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import com.example.searchdemo.database.CityDatabase
+import com.example.searchdemo.viewmodel.CityViewModel
 import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
 import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
-    @SuppressLint("ClickableViewAccessibility")
+    private val cityViewModel: CityViewModel by viewModels()
+    private lateinit var adapter: ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,14 +39,21 @@ class SearchView : AppCompatActivity() {
             insets
         }
 
-        binding.recycler.adapter = WeatherAdapter(this, SharedPrefHelper.getWeatherList(this)) {
-            val intent = Intent(this, MainActivity::class.java)
-            val gson = Gson()
-            val json = gson.toJson(it.fullData)
-            intent.putExtra("FULL_DATA", json)
-            startActivity(intent)
-            finish()
-        }
+        val database = CityDatabase.getInstance(this)
+        CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
+
+        val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
+
+
+        binding.recycler.adapter =
+            WeatherAdapter(this, SharedPrefHelper.getWeatherList(this)) {
+                val intent = Intent(this, MainActivity::class.java)
+                val gson = Gson()
+                val json = gson.toJson(it.fullData)
+                intent.putExtra("FULL_DATA", json)
+                startActivity(intent)
+                finish()
+            }
 
         binding.backbutton.setOnClickListener {
             finish()
@@ -72,5 +85,12 @@ class SearchView : AppCompatActivity() {
             false
         }
 
+        binding.SeachED.setOnItemClickListener { _, _, position, _ ->
+            val selectedCity = adapter.getItem(position)
+            binding.SeachED.setText(selectedCity) // Auto-fill selected city
+        }
+
     }
+
+
 }
