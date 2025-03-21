@@ -5,4 +5,5 @@ data class WeatherData(
     val temperature: Int,
     val description: String,
     val icon: Int,
+    val isUserLocation: Boolean = false
 )

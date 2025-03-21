@@ -5,7 +5,7 @@ import android.os.Build
 import android.util.Log
 import java.util.Locale
 
-fun getFullLocationName(
+fun getLocationName(
     context: Context,
     latitude: Double,
     longitude: Double,
@@ -19,8 +19,7 @@ fun getFullLocationName(
             override fun onGeocode(addresses: MutableList<Address>) {
                 if (addresses.isNotEmpty()) {
                     val city = addresses[0].locality ?: ""
-                    val country = addresses[0].countryName ?: ""
-                    callback(listOf(city, country).filter { it.isNotEmpty() }.joinToString(", "))
+                    callback(listOf(city).filter { it.isNotEmpty() }.joinToString(", "))
                 } else {
                     callback("Unknown Location")
                 }
@@ -32,8 +31,7 @@ fun getFullLocationName(
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()) {
                 val city = addresses[0].locality ?: ""
-                val country = addresses[0].countryName ?: ""
-                callback(listOf(city, country).filter { it.isNotEmpty() }.joinToString(", "))
+                callback(listOf(city).filter { it.isNotEmpty() }.joinToString(", "))
             } else {
                 callback("Unknown Location")
             }

@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val searchHistory = SharedPrefHelper.getWeatherList(this).toMutableList()
+
+        
+
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, binding)
 

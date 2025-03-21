@@ -1,15 +1,19 @@
 package com.example.weather_app.utils
 
+import SharedPrefHelper
 import android.app.Activity
 import android.content.Context
 import com.example.weather_app.Adapters.Forecast_Adapter
 import com.example.weather_app.Adapters.TempCard_Adapter
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.Models.VDaysForecast
+import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.Models.tempcard
 import com.example.weather_app.databinding.ActivityMainBinding
+import com.example.weather_app.tools.addWeatherIfNotExists
 import com.example.weather_app.tools.getWeatherStatus
 import com.example.weather_app.tools.parseDateTime
+import getFullLocationName
 import getLocationName
 import getVisibilityDescription
 
@@ -23,23 +27,31 @@ fun updateUI(
     val TempList = arrayListOf<tempcard>()
     val DaysList = arrayListOf<VDaysForecast>()
 
+    val searchHistory = SharedPrefHelper.getWeatherList(context).toMutableList()
+    var cityname = ""
+    var dec = ""
+    var img = 0
     if (weatherData.timelines.hourly.size > 2 && weatherData.timelines.minutely.size > 2) {
         binding.TempDayMonth.text =
             parseDateTime(weatherData.timelines.hourly[2].date).formattedDateWithDay
         binding.TempValue.text = "${weatherData.timelines.hourly[2].values.temperature.toInt()}°c"
-        binding.TempDescribe.text = getWeatherStatus(
+        dec = getWeatherStatus(
             weatherData.timelines.hourly[2].values.weatherCode.toInt(),
             parseDateTime(weatherData.timelines.hourly[2].date).time24
         ).first
-        getLocationName(context, latitude, longitude) { locationName ->
+        binding.TempDescribe.text = dec
+        getFullLocationName(context, latitude, longitude) { locationName ->
             binding.TempLocation.text = locationName
         }
-        binding.TempImage.setImageResource(
-            getWeatherStatus(
-                weatherData.timelines.hourly[2].values.weatherCode.toInt(),
-                parseDateTime(weatherData.timelines.hourly[2].date).time24
-            ).second
-        )
+        getLocationName(context, latitude, longitude) {
+            cityname = it
+        }
+        img = getWeatherStatus(
+            weatherData.timelines.hourly[2].values.weatherCode.toInt(),
+            parseDateTime(weatherData.timelines.hourly[2].date).time24
+        ).second
+
+        binding.TempImage.setImageResource(img)
         binding.HumidityValue.setText("${weatherData.timelines.minutely[2].values.humidity} %")
         binding.WindSpeedValue.setText("${weatherData.timelines.minutely[2].values.windSpeed} m/s")
         binding.WindGustValue.setText("${weatherData.timelines.minutely[2].values.windGust} m/s")
@@ -50,6 +62,12 @@ fun updateUI(
         binding.TempHValue.setText("H : ${weatherData.timelines.daily[2].values.tempMax.toInt()}°c")
         binding.TempLValue.setText("L : ${weatherData.timelines.daily[2].values.tempMin.toInt()}°c")
 
+        val newhistory =
+            WeatherData(
+                cityname, weatherData.timelines.hourly[2].values.temperature.toInt(), dec, img
+            )
+
+        addWeatherIfNotExists(context, newhistory)
     } else {
         binding.TempDayMonth.text = "No Data"
         binding.TempValue.text = "--°c"
@@ -64,8 +82,7 @@ fun updateUI(
             TempList.add(
                 tempcard(
                     getWeatherStatus(
-                        hourlyData.values.weatherCode.toInt(),
-                        parseDateTime(hourlyData.date).time24
+                        hourlyData.values.weatherCode.toInt(), parseDateTime(hourlyData.date).time24
                     ).second,
                     "${hourlyData.values.temperature.toInt()}°c",
                     parseDateTime(hourlyData.date).time12
@@ -88,6 +105,6 @@ fun updateUI(
     }
     binding.TempRV.adapter = TempCard_Adapter(context as Activity, TempList)
     binding.Forecast10DayRV.adapter = Forecast_Adapter(context as Activity, DaysList)
-    
+
 
 }

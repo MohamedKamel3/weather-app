@@ -1,10 +1,12 @@
 package com.example.weather_app
 
+import SharedPrefHelper
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.databinding.ActivitySearchViewBinding
 
 class SearchView : AppCompatActivity() {
@@ -26,6 +28,8 @@ class SearchView : AppCompatActivity() {
             insets
         }
 
+        binding.recycler.adapter = WeatherAdapter(this, SharedPrefHelper.getWeatherList(this))
+        
         binding.backbutton.setOnClickListener {
             finish()
         }

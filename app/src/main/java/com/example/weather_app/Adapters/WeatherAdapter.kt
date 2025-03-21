@@ -15,7 +15,7 @@ class WeatherAdapter(val activity: Activity, val weatherList: List<WeatherData>)
 
     class WeatherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cityName: TextView = view.findViewById(R.id.city)
-        val temperature: TextView = view.findViewById(R.id.tvTemperature)
+        val temperature: TextView = view.findViewById(R.id.Temperature_TV)
         val description: TextView = view.findViewById(R.id.describe)
         val icon: ImageView = view.findViewById(R.id.imgWeatherIcon)
     }
