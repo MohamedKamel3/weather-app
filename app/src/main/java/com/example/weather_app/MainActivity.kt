@@ -1,5 +1,6 @@
 package com.example.weather_app
 
+import SharedPrefHelper
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         val searchHistory = SharedPrefHelper.getWeatherList(this).toMutableList()
 
-        
+
 
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, binding)
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         locationHelper.requestLocationPermission {
             locationHelper.getCurrentLocation { lat, lon ->
                 weatherRepository.fetchWeatherData(lat, lon) { weatherData ->
-                    weatherData?.let { updateUI(this, binding, it, lat, lon) }
+                    weatherData?.let { updateUI(this, binding, it) }
                 }
             }
         }
@@ -57,5 +58,24 @@ class MainActivity : AppCompatActivity() {
             val i = Intent(this, SearchView::class.java)
             startActivity(i)
         }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SEARCH_REQUEST_CODE && resultCode == RESULT_OK) {
+            val cityName = data?.getStringExtra("CITY_NAME")
+
+            cityName?.let {
+                // 🔹 جلب بيانات الطقس للمدينة الجديدة
+                weatherRepository.fetchWeatherByCity(it) { weatherData ->
+                    weatherData?.let { updateUI(this, binding, it) }
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val SEARCH_REQUEST_CODE = 100
     }
 }

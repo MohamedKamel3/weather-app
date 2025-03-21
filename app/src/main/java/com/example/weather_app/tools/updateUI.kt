@@ -21,17 +21,22 @@ fun updateUI(
     context: Context,
     binding: ActivityMainBinding,
     weatherData: FullData,
-    latitude: Double,
-    longitude: Double
 ) {
     val TempList = arrayListOf<tempcard>()
     val DaysList = arrayListOf<VDaysForecast>()
+
+    var lat = 0.0
+    var log = 0.0
 
     val searchHistory = SharedPrefHelper.getWeatherList(context).toMutableList()
     var cityname = ""
     var dec = ""
     var img = 0
     if (weatherData.timelines.hourly.size > 2 && weatherData.timelines.minutely.size > 2) {
+
+        lat = weatherData.location.lat
+        log = weatherData.location.lon
+
         binding.TempDayMonth.text =
             parseDateTime(weatherData.timelines.hourly[2].date).formattedDateWithDay
         binding.TempValue.text = "${weatherData.timelines.hourly[2].values.temperature.toInt()}°c"
@@ -40,10 +45,10 @@ fun updateUI(
             parseDateTime(weatherData.timelines.hourly[2].date).time24
         ).first
         binding.TempDescribe.text = dec
-        getFullLocationName(context, latitude, longitude) { locationName ->
+        getFullLocationName(context, lat, log) { locationName ->
             binding.TempLocation.text = locationName
         }
-        getLocationName(context, latitude, longitude) {
+        getLocationName(context, lat, log) {
             cityname = it
         }
         img = getWeatherStatus(

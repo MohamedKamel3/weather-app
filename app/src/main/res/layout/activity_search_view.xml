@@ -40,7 +40,7 @@
             </FrameLayout>
 
             <EditText
-                android:id="@+id/bb"
+                android:id="@+id/Seach_ED"
                 android:layout_width="320dp"
                 android:layout_height="55dp"
                 android:layout_marginStart="10dp"
