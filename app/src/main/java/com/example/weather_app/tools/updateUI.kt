@@ -111,6 +111,5 @@ fun updateUI(
     }
     binding.TempRV.adapter = TempCard_Adapter(context as Activity, TempList)
     binding.Forecast10DayRV.adapter = Forecast_Adapter(context as Activity, DaysList)
-
-
+    
 }
