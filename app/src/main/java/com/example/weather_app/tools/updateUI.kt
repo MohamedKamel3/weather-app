@@ -68,14 +68,13 @@ fun updateUI(
         binding.TempHValue.setText("H : ${weatherData.timelines.daily[2].values.tempMax.toInt()}°c")
         binding.TempLValue.setText("L : ${weatherData.timelines.daily[2].values.tempMin.toInt()}°c")
 
-        val newhistory =
-            WeatherData(
-                weatherData,
-                cityname,
-                weatherData.timelines.hourly[2].values.temperature.toInt(),
-                dec,
-                img
-            )
+        val newhistory = WeatherData(
+            weatherData,
+            cityname,
+            weatherData.timelines.hourly[2].values.temperature.toInt(),
+            dec,
+            img
+        )
 
         addWeatherIfNotExists(context, newhistory)
     } else {
@@ -84,22 +83,19 @@ fun updateUI(
         binding.TempDescribe.text = "No Weather Info"
         binding.TempLocation.text = "No Location Info"
     }
-    val currentDate = parseDateTime(weatherData.timelines.hourly[0].date).date
-    for (hourlyData in weatherData.timelines.hourly.drop(2)) {
-        val hourlyDate = parseDateTime(hourlyData.date).date
+    for (hourlyData in weatherData.timelines.hourly.drop(2).take(24)) {
 
-        if (hourlyDate == currentDate) {
-            TempList.add(
-                tempcard(
-                    getWeatherStatus(
-                        hourlyData.values.weatherCode.toInt(), parseDateTime(hourlyData.date).time24
-                    ).second,
-                    "${hourlyData.values.temperature.toInt()}°c",
-                    parseDateTime(hourlyData.date).time12
-                )
+        TempList.add(
+            tempcard(
+                getWeatherStatus(
+                    hourlyData.values.weatherCode.toInt(), parseDateTime(hourlyData.date).time24
+                ).second,
+                "${hourlyData.values.temperature.toInt()}°c",
+                parseDateTime(hourlyData.date).time12
             )
-        }
+        )
     }
+
     for (dayData in 1 until weatherData.timelines.daily.size) {
         DaysList.add(
             VDaysForecast(
