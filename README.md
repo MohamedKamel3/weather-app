@@ -23,7 +23,7 @@
         
  </p>
     
-
+ <img src="app/src/main/res/drawable/pages.png" alt="Design">
    
     
 <h2 id="figma-design">Figma Design</h2>
