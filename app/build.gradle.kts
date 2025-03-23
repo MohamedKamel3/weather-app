@@ -62,5 +62,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     kapt("androidx.room:room-compiler:2.5.2")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
 
 }

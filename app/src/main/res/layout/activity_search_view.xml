@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -8,61 +8,62 @@
     android:orientation="vertical"
     tools:context=".SearchView">
 
+    <!-- Search bar layout -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="32dp"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20sp"
-            android:layout_marginBottom="48sp"
-            android:orientation="horizontal">
+        <FrameLayout
+            android:id="@+id/backbutton"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_bg"
+            android:clickable="true"
+            android:focusable="true">
 
-            <FrameLayout
-                android:id="@+id/backbutton"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginEnd="20sp"
-                android:background="@drawable/rounded_bg"
-                android:clickable="true"
-                android:focusable="true">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:contentDescription="Back"
+                android:src="@drawable/img"
+                app:tint="@android:color/black" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="Search"
-                    android:src="@drawable/img"
-                    app:tint="@android:color/black" />
+        </FrameLayout>
 
-            </FrameLayout>
+        <AutoCompleteTextView
+            android:id="@+id/SeachED"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:background="@drawable/box2"
+            android:completionThreshold="1"
+            android:drawableStart="@drawable/img_1"
+            android:gravity="center"
+            android:hint="Search location .."
+            android:inputType="text"
+            android:paddingStart="20dp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/Seach_ED"
-                android:layout_width="320dp"
-                android:layout_height="55dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/box2"
-                android:completionThreshold="1"
-                android:drawableStart="@drawable/img_1"
-                android:gravity="center"
-                android:hint="Search location .."
-                android:inputType="text"
-                android:paddingStart="20dp" />
+    </LinearLayout>
 
-        </LinearLayout>
-
+    <!-- SwipeRefreshLayout containing RecyclerView -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/city_item" />
 
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>

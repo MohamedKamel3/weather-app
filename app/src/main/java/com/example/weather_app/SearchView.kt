@@ -15,6 +15,7 @@ import com.example.searchdemo.viewmodel.CityViewModel
 import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
+import com.example.weather_app.tools.refreshWeatherData
 import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
@@ -87,9 +88,12 @@ class SearchView : AppCompatActivity() {
 
         binding.SeachED.setOnItemClickListener { _, _, position, _ ->
             val selectedCity = adapter.getItem(position)
-            binding.SeachED.setText(selectedCity) // Auto-fill selected city
+            binding.SeachED.setText(selectedCity)
         }
-
+        binding.swiperefresh.setOnRefreshListener {
+            refreshWeatherData(binding, "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk")
+            binding.swiperefresh.isRefreshing = false
+        }
     }
 
 
