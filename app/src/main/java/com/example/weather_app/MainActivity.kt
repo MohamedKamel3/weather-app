@@ -11,6 +11,7 @@ import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.network.WeatherRepository
+import com.example.weather_app.tools.toggleTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
 import com.google.gson.Gson
@@ -20,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
     private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,8 +40,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         val searchHistory = SharedPrefHelper.getWeatherList(this).toMutableList()
-
-
 
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, binding)
@@ -74,6 +72,13 @@ class MainActivity : AppCompatActivity() {
             val i = Intent(this, SearchView::class.java)
             startActivity(i)
         }
+        binding.tempChangeButton.setOnClickListener {
+
+            val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
+            toggleTemperatureUnits(binding.root.context, binding)
+            if (isCelsius) {
+                binding.changeDG.text = "°c"
+            } else binding.changeDG.text = "°f"
+        }
     }
-    
 }

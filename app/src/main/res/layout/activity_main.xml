@@ -55,11 +55,12 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:id="@+id/changeDG"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="Search"
-                    android:text="°F"
+                    android:text="°f"
                     android:textColor="#666666"
                     android:textSize="27sp"
                     app:tint="@android:color/black" />
