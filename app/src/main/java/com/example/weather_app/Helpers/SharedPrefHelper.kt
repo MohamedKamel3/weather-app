@@ -12,7 +12,7 @@ object SharedPrefHelper {
     private const val KEY_IS_CELSIUS = "is_celsius"
 
 
-    fun saveWeatherList(context: Context, weatherList: List<WeatherData>) {
+    fun saveWeatherList(context: Context, weatherList: MutableList<WeatherData>) {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
         val json = Gson().toJson(weatherList)
@@ -20,10 +20,10 @@ object SharedPrefHelper {
         editor.apply()
     }
 
-    fun getWeatherList(context: Context): List<WeatherData> {
+    fun getWeatherList(context: Context): MutableList<WeatherData> {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val json = sharedPref.getString(SEARCH_HISTORY_KEY, "[]") // Default to empty list
-        val type = object : TypeToken<List<WeatherData>>() {}.type
+        val type = object : TypeToken<MutableList<WeatherData>>() {}.type
         return Gson().fromJson(json, type)
     }
 

@@ -11,11 +11,10 @@ import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.R
 
 class WeatherAdapter(
-    val activity: Activity,
-    val weatherList: List<WeatherData>,
-    val onItemClick: (WeatherData) -> Unit
-) :
-    RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
+    private val activity: Activity,
+    private var weatherList: MutableList<WeatherData>,
+    private val onItemClick: (WeatherData) -> Unit
+) : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
 
     class WeatherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cityName: TextView = view.findViewById(R.id.city)
@@ -32,14 +31,63 @@ class WeatherAdapter(
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
         val weather = weatherList[position]
+
         holder.cityName.text = weather.cityName
         holder.temperature.text = "${weather.temperature}°C"
         holder.description.text = weather.description
         holder.icon.setImageResource(weather.icon)
-        holder.itemView.setOnClickListener {
-            onItemClick(weather)
-        }
+        holder.itemView.setOnClickListener { onItemClick(weather) }
     }
 
     override fun getItemCount(): Int = weatherList.size
+
+    /**
+     * Updates the adapter with new weather data.
+     */
+    fun updateData(newList: List<WeatherData>) {
+        weatherList.clear()
+        weatherList.addAll(newList)
+        notifyDataSetChanged()
+    }
+
+    fun updateTemperatureUnits(isCelsius: Boolean) {
+        weatherList = weatherList.map { item ->
+            val tempString = item.temperature
+
+            val tempValue = tempString.replace("[^0-9-]".toRegex(), "").toIntOrNull()
+
+            val newTemp = if (tempValue != null) {
+                if (tempString.contains("°F")) {
+                    fahrenheitToCelsius(tempValue)
+                } else if (tempString.contains("°C")) {
+                    celsiusToFahrenheit(tempValue)
+                } else {
+                    tempValue
+                }
+            } else {
+                item.temperature
+            }
+
+            val newTempString = "$newTemp${if (isCelsius) "°C" else "°F"}"
+
+            item.copy(temperature = newTempString)
+        }.toMutableList()
+
+        notifyDataSetChanged()
+    }
+
+    /**
+     * Converts Celsius to Fahrenheit.
+     */
+    private fun celsiusToFahrenheit(celsius: Int): Int {
+        return ((celsius * 9 / 5) + 32)
+    }
+
+    /**
+     * Converts Fahrenheit to Celsius.
+     */
+    private fun fahrenheitToCelsius(fahrenheit: Int): Int {
+        return ((fahrenheit - 32) * 5 / 9)
+    }
+
 }

@@ -60,10 +60,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="Search"
-                    android:text="°f"
                     android:textColor="#666666"
                     android:textSize="27sp"
-                    app:tint="@android:color/black" />
+                    app:tint="@android:color/black"
+                    tools:text="°F" />
             </FrameLayout>
 
             <FrameLayout
@@ -164,7 +164,7 @@
                     android:textSize="19sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/TempValue"
-                    tools:text="h: 25°c" />
+                    tools:text="H : 25°c" />
 
                 <!-- ************* Now L  ************* -->
                 <TextView
@@ -177,7 +177,7 @@
                     app:layout_constraintEnd_toEndOf="@id/TempDayMonth"
                     app:layout_constraintStart_toEndOf="@id/TempHValue"
                     app:layout_constraintTop_toBottomOf="@id/TempValue"
-                    tools:text="L: 17°c" />
+                    tools:text="L : 17°c" />
 
                 <!-- ************* Now Image  ************* -->
                 <ImageView

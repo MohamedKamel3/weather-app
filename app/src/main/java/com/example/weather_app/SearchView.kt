@@ -1,5 +1,6 @@
 package com.example.weather_app
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
@@ -9,7 +10,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.example.searchdemo.database.CityDatabase
 import com.example.searchdemo.viewmodel.CityViewModel
 import com.example.weather_app.Adapters.WeatherAdapter
@@ -20,8 +20,9 @@ import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
     private val cityViewModel: CityViewModel by viewModels()
-    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var list: ArrayAdapter<String>
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,18 +44,19 @@ class SearchView : AppCompatActivity() {
         val database = CityDatabase.getInstance(this)
         CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
 
-        val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
 
+        val weatherList = SharedPrefHelper.getWeatherList(this)
+        val adapter = WeatherAdapter(this, weatherList) { selectedItem ->
+            val intent = Intent(this, MainActivity::class.java)
+            val json = Gson().toJson(selectedItem.fullData)
+            intent.putExtra("FULL_DATA", json)
+            startActivity(intent)
+            finish()
+        }
+        binding.recycler.adapter = adapter
 
-        binding.recycler.adapter =
-            WeatherAdapter(this, SharedPrefHelper.getWeatherList(this)) {
-                val intent = Intent(this, MainActivity::class.java)
-                val gson = Gson()
-                val json = gson.toJson(it.fullData)
-                intent.putExtra("FULL_DATA", json)
-                startActivity(intent)
-                finish()
-            }
+//        val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
+//        adapter.updateTemperatureUnits(isCelsius)
 
         binding.backbutton.setOnClickListener {
             finish()
@@ -87,7 +89,7 @@ class SearchView : AppCompatActivity() {
         }
 
         binding.SeachED.setOnItemClickListener { _, _, position, _ ->
-            val selectedCity = adapter.getItem(position)
+            val selectedCity = list.getItem(position)
             binding.SeachED.setText(selectedCity)
         }
         binding.swiperefresh.setOnRefreshListener {

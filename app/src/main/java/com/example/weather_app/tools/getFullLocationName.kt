@@ -37,7 +37,7 @@ fun getFullLocationName(
             }
         } catch (e: Exception) {
             Log.e("GeocoderError", "Error getting location: ${e.message}")
-            callback("Location not found")
+            callback("Unknown")
         }
     }
 }

@@ -1,47 +1,44 @@
 package com.example.weather_app.tools
 
-import android.content.Context
 import com.example.weather_app.Adapters.Forecast_Adapter
 import com.example.weather_app.Adapters.TempCard_Adapter
-import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivityMainBinding
 
-fun toggleTemperatureUnits(context: Context, binding: ActivityMainBinding) {
-    val isCelsius = SharedPrefHelper.getTemperatureUnit(context)
+fun changeTemperatureUnits(binding: ActivityMainBinding, isCelsius: Boolean) {
 
     fun convertTemp(value: String): String {
-        val temp = value.replace("°c", "").replace("°f", "").trim().toDoubleOrNull()
-        return if (temp != null) {
-            if (isCelsius) {
-                "${((temp * 9 / 5) + 32).toInt()}°f"
-            } else {
-                "${((temp - 32) * 5 / 9).toInt()}°c"
-            }
+        val temp = value.filter { it.isDigit() || it == '.' || it == '-' }.toDoubleOrNull()
+
+        if (temp == null) return value  // Return as is if conversion fails
+
+        return if (isCelsius) {
+            "${((temp - 32) * 5 / 9).toInt()}°C"
         } else {
-            value
+            "${((temp * 9 / 5) + 32).toInt()}°F"
         }
     }
 
+
     binding.TempValue.text = convertTemp(binding.TempValue.text.toString())
     binding.TempHValue.text =
-        "${convertTemp(binding.TempHValue.text.toString().replace(" H : ", ""))}"
+        "H: ${convertTemp(binding.TempHValue.text.toString().replace("H : ", ""))}"
     binding.TempLValue.text =
-        "${convertTemp(binding.TempLValue.text.toString().replace(" L : ", ""))}"
+        "L: ${convertTemp(binding.TempLValue.text.toString().replace("L : ", ""))}"
 
     val tempAdapter = binding.TempRV.adapter as? TempCard_Adapter
     tempAdapter?.let {
-        for (item in it.data) {
+        it.data.forEachIndexed { index, item ->
             item.temp = convertTemp(item.temp)
+            it.notifyItemChanged(index)
         }
-        it.notifyDataSetChanged()
     }
 
     val forecastAdapter = binding.Forecast10DayRV.adapter as? Forecast_Adapter
     forecastAdapter?.let {
-        for (item in it.data) {
+        it.data.forEachIndexed { index, item ->
             item.temperature = convertTemp(item.temperature)
+            it.notifyItemChanged(index)
         }
-        it.notifyDataSetChanged()
     }
-    SharedPrefHelper.saveTemperatureUnit(context, !isCelsius)
+
 }

@@ -12,7 +12,6 @@ import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.network.WeatherRepository
-import com.example.weather_app.tools.toggleTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
 import com.google.gson.Gson
@@ -22,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
     private val apiKey = "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,7 +40,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val searchHistory = SharedPrefHelper.getWeatherList(this).toMutableList()
+        // Get the current unit state
+        val isCelsiuss = SharedPrefHelper.getTemperatureUnit(this)
+
+        // Update the button text based on new state
+        binding.changeDG.text = if (!isCelsiuss) "°C" else "°F"
 
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, binding.root.context)
@@ -54,10 +58,10 @@ class MainActivity : AppCompatActivity() {
         } else if (intent.hasExtra("CITY_NAME")) {
             val cityName = intent.getStringExtra("CITY_NAME")
             cityName?.let {
-                binding.progressBar.visibility = View.VISIBLE  // Show ProgressBar before request
+                binding.progressBar.visibility = View.VISIBLE
                 weatherRepository.fetchWeatherByCity(it) { weatherData ->
                     runOnUiThread {
-                        binding.progressBar.visibility = View.GONE  // Hide after response
+                        binding.progressBar.visibility = View.GONE
                         weatherData?.let { updateUI(this, binding, it) }
                     }
                 }
@@ -82,13 +86,20 @@ class MainActivity : AppCompatActivity() {
             val i = Intent(this, SearchView::class.java)
             startActivity(i)
         }
-        binding.tempChangeButton.setOnClickListener {
 
-            val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
-            toggleTemperatureUnits(binding.root.context, binding)
-            if (isCelsius) {
-                binding.changeDG.text = "°c"
-            } else binding.changeDG.text = "°f"
-        }
+//        binding.tempChangeButton.setOnClickListener {
+//            // Get the current unit state
+//            val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
+//            // Toggle the state and update the UI
+//            val newIsCelsius = !isCelsius
+//            SharedPrefHelper.saveTemperatureUnit(this, newIsCelsius)  // Save new state
+//
+//            // Update the button text based on new state
+//            binding.changeDG.text = if (newIsCelsius) "°F" else "°C"
+//
+//            // Call the function with the new state
+//            changeTemperatureUnits(binding, newIsCelsius)
+//        }
+
     }
 }
