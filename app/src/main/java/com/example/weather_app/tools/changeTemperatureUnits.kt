@@ -17,7 +17,6 @@ fun changeTemperatureUnits(binding: ActivityMainBinding, isCelsius: Boolean) {
             "${((temp * 9 / 5) + 32).toInt()}°F"
         }
     }
-    //nothing
 
 
     binding.TempValue.text = convertTemp(binding.TempValue.text.toString())
