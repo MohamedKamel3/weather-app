@@ -68,7 +68,7 @@ interface WeatherService {
     
   <h2 id="installation">🚀 Installation & Setup</h2>
     <ol>
-        <li>Clone this repository: <code>git clone https://github.com/your-repo.git</code></li>
+        <li>Clone this repository: <code>git clone https://github.com/MohamedKamel3/weather-app.git</code></li>
         <li>Open in Android Studio.</li>
         <li>Add your <strong>Tomorrow.io API Key</strong> in <code>MainActivity</code>.</li>
         <li>Run the project on an emulator or physical device.</li>
