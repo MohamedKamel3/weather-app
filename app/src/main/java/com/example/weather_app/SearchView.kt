@@ -55,9 +55,6 @@ class SearchView : AppCompatActivity() {
         }
         binding.recycler.adapter = adapter
 
-//        val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
-//        adapter.updateTemperatureUnits(isCelsius)
-
         binding.backbutton.setOnClickListener {
             finish()
         }

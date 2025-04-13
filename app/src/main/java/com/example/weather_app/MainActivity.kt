@@ -12,6 +12,7 @@ import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.network.WeatherRepository
+import com.example.weather_app.tools.changeTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
 import com.google.gson.Gson
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
     private val apiKey = "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk"
+    private lateinit var weatherDataa: FullData
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             val json = intent.getStringExtra("FULL_DATA")
             json?.let {
                 val fullData = Gson().fromJson(it, FullData::class.java)
+                weatherDataa = fullData
                 updateUI(this, binding, fullData)
             }
         } else if (intent.hasExtra("CITY_NAME")) {
@@ -62,7 +66,10 @@ class MainActivity : AppCompatActivity() {
                 weatherRepository.fetchWeatherByCity(it) { weatherData ->
                     runOnUiThread {
                         binding.progressBar.visibility = View.GONE
-                        weatherData?.let { updateUI(this, binding, it) }
+                        weatherData?.let {
+                            weatherDataa = it
+                            updateUI(this, binding, it)
+                        }
                     }
                 }
             }
@@ -73,7 +80,10 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread {
                         weatherRepository.fetchWeatherData(lat, lon) { weatherData ->
                             binding.progressBar.visibility = View.GONE
-                            weatherData?.let { updateUI(this, binding, it) }
+                            weatherData?.let {
+                                weatherDataa = it
+                                updateUI(this, binding, it)
+                            }
                         }
                     }
                 }
@@ -87,19 +97,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
 
-//        binding.tempChangeButton.setOnClickListener {
-//            // Get the current unit state
-//            val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
-//            // Toggle the state and update the UI
-//            val newIsCelsius = !isCelsius
-//            SharedPrefHelper.saveTemperatureUnit(this, newIsCelsius)  // Save new state
-//
-//            // Update the button text based on new state
-//            binding.changeDG.text = if (newIsCelsius) "°F" else "°C"
-//
-//            // Call the function with the new state
-//            changeTemperatureUnits(binding, newIsCelsius)
-//        }
+        binding.tempChangeButton.setOnClickListener {
+            // Get the current unit state
+            val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
+            // Toggle the state and update the UI
+            val newIsCelsius = !isCelsius
+            SharedPrefHelper.saveTemperatureUnit(this, newIsCelsius)  // Save new state
+
+            // Update the button text based on new state
+            binding.changeDG.text = if (newIsCelsius) "°F" else "°C"
+
+            // Call the function with the new state
+            changeTemperatureUnits(binding, newIsCelsius, weatherDataa)
+        }
 
     }
 }

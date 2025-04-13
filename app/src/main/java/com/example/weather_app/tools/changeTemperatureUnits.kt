@@ -1,44 +1,103 @@
 package com.example.weather_app.tools
 
+import android.app.Activity
 import com.example.weather_app.Adapters.Forecast_Adapter
 import com.example.weather_app.Adapters.TempCard_Adapter
+import com.example.weather_app.Models.FullData
+import com.example.weather_app.Models.VDaysForecast
+import com.example.weather_app.Models.tempcard
 import com.example.weather_app.databinding.ActivityMainBinding
 
-fun changeTemperatureUnits(binding: ActivityMainBinding, isCelsius: Boolean) {
+fun changeTemperatureUnits(
+    binding: ActivityMainBinding,
+    isCelsius: Boolean,
+    weatherData: FullData
+) {
+    val tempList = arrayListOf<tempcard>()
+    val daysList = arrayListOf<VDaysForecast>()
+    val hourlyData = weatherData.timelines.hourly
+    val dailyData = weatherData.timelines.daily
 
-    fun convertTemp(value: String): String {
-        val temp = value.filter { it.isDigit() || it == '.' || it == '-' }.toDoubleOrNull()
+    if (isCelsius) {
+        binding.TempValue.text = "${hourlyData[2].values.tempCelsius.toInt()}°C"
+        binding.TempHValue.text = "H: ${dailyData[0].values.maxTempCelsius.toInt()}°C"
+        binding.TempLValue.text = "L: ${dailyData[0].values.minTempCelsius.toInt()}°C"
 
-        if (temp == null) return value  // Return as is if conversion fails
+        // Populate RecyclerView lists
+        for (hourly in hourlyData.drop(2).take(24)) {
+            tempList.add(
+                tempcard(
+                    getWeatherStatus(
+                        hourly.values.weatherCode.toInt(),
+                        parseDateTime(hourly.date).time24
+                    ).second,
+                    "${hourly.values.tempCelsius.toInt()}°C",
+                    parseDateTime(hourly.date).time12
+                )
+            )
+        }
+        for (i in 1 until dailyData.size) {
+            daysList.add(
+                VDaysForecast(
+                    getWeatherStatus(
+                        dailyData[i].values.weatherCodeMax!!.toInt(),
+                        parseDateTime(dailyData[i].date).time24
+                    ).second,
+                    "${dailyData[i].values.avgTempCelsius.toInt()}°C",
+                    parseDateTime(dailyData[i].date).date,
+                    parseDateTime(dailyData[i].date).dayName,
+                )
+            )
+        }
+    } else {
+        binding.TempValue.text = "${hourlyData[2].values.tempFahrenheit.toInt()}°F"
+        binding.TempHValue.text = "H: ${dailyData[0].values.maxTempFahrenheit.toInt()}°F"
+        binding.TempLValue.text = "L: ${dailyData[0].values.minTempFahrenheit.toInt()}°F"
 
-        return if (isCelsius) {
-            "${((temp - 32) * 5 / 9).toInt()}°C"
-        } else {
-            "${((temp * 9 / 5) + 32).toInt()}°F"
+        // Populate RecyclerView lists
+        for (hourly in hourlyData.drop(2).take(24)) {
+            tempList.add(
+                tempcard(
+                    getWeatherStatus(
+                        hourly.values.weatherCode.toInt(),
+                        parseDateTime(hourly.date).time24
+                    ).second,
+                    "${hourly.values.tempFahrenheit.toInt()}°F",
+                    parseDateTime(hourly.date).time12
+                )
+            )
+        }
+        for (i in 1 until dailyData.size) {
+            daysList.add(
+                VDaysForecast(
+                    getWeatherStatus(
+                        dailyData[i].values.weatherCodeMax!!.toInt(),
+                        parseDateTime(dailyData[i].date).time24
+                    ).second,
+                    "${dailyData[i].values.avgTempFahrenheit.toInt()}°F",
+                    parseDateTime(dailyData[i].date).date,
+                    parseDateTime(dailyData[i].date).dayName,
+                )
+            )
         }
     }
-
-
-    binding.TempValue.text = convertTemp(binding.TempValue.text.toString())
-    binding.TempHValue.text =
-        "H: ${convertTemp(binding.TempHValue.text.toString().replace("H : ", ""))}"
-    binding.TempLValue.text =
-        "L: ${convertTemp(binding.TempLValue.text.toString().replace("L : ", ""))}"
-
-    val tempAdapter = binding.TempRV.adapter as? TempCard_Adapter
-    tempAdapter?.let {
-        it.data.forEachIndexed { index, item ->
-            item.temp = convertTemp(item.temp)
-            it.notifyItemChanged(index)
-        }
+    // Update existing adapters instead of resetting them
+    (binding.TempRV.adapter as? TempCard_Adapter)?.apply {
+        data.clear()
+        data.addAll(tempList)
+        notifyDataSetChanged()
+    } ?: run {
+        binding.TempRV.adapter = TempCard_Adapter(binding.root.context as Activity, tempList)
     }
 
-    val forecastAdapter = binding.Forecast10DayRV.adapter as? Forecast_Adapter
-    forecastAdapter?.let {
-        it.data.forEachIndexed { index, item ->
-            item.temperature = convertTemp(item.temperature)
-            it.notifyItemChanged(index)
-        }
+    (binding.Forecast10DayRV.adapter as? Forecast_Adapter)?.apply {
+        data.clear()
+        data.addAll(daysList)
+        notifyDataSetChanged()
+    } ?: run {
+        binding.Forecast10DayRV.adapter =
+            Forecast_Adapter(binding.root.context as Activity, daysList)
     }
+
 
 }

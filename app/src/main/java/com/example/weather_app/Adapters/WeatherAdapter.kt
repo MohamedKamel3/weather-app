@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.R
 
@@ -33,7 +34,7 @@ class WeatherAdapter(
         val weather = weatherList[position]
 
         holder.cityName.text = weather.cityName
-        holder.temperature.text = "${weather.temperature}°C"
+        holder.temperature.text = getFormattedTemperature(weather)
         holder.description.text = weather.description
         holder.icon.setImageResource(weather.icon)
         holder.itemView.setOnClickListener { onItemClick(weather) }
@@ -50,44 +51,12 @@ class WeatherAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateTemperatureUnits(isCelsius: Boolean) {
-        weatherList = weatherList.map { item ->
-            val tempString = item.temperature
-
-            val tempValue = tempString.replace("[^0-9-]".toRegex(), "").toIntOrNull()
-
-            val newTemp = if (tempValue != null) {
-                if (tempString.contains("°F")) {
-                    fahrenheitToCelsius(tempValue)
-                } else if (tempString.contains("°C")) {
-                    celsiusToFahrenheit(tempValue)
-                } else {
-                    tempValue
-                }
-            } else {
-                item.temperature
-            }
-
-            val newTempString = "$newTemp${if (isCelsius) "°C" else "°F"}"
-
-            item.copy(temperature = newTempString)
-        }.toMutableList()
-
-        notifyDataSetChanged()
+    fun getFormattedTemperature(weather: WeatherData): String {
+        val isCelsius = SharedPrefHelper.getTemperatureUnit(activity)
+        return if (isCelsius) {
+            "${weather.tempCelsius}°C"
+        } else {
+            "${weather.tempFahrenheit}°F"
+        }
     }
-
-    /**
-     * Converts Celsius to Fahrenheit.
-     */
-    private fun celsiusToFahrenheit(celsius: Int): Int {
-        return ((celsius * 9 / 5) + 32)
-    }
-
-    /**
-     * Converts Fahrenheit to Celsius.
-     */
-    private fun fahrenheitToCelsius(fahrenheit: Int): Int {
-        return ((fahrenheit - 32) * 5 / 9)
-    }
-
 }

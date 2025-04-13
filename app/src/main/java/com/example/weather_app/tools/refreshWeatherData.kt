@@ -17,8 +17,8 @@ fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
             weatherData?.let {
                 // Update the list with a new object
                 weatherList[index] = weatherDataa.copy(
-                    temperature = weatherData.timelines.hourly[2].values.temperature.toInt()
-                        .toString()
+                    tempCelsius = "${weatherData.timelines.hourly[2].values.tempCelsius.toInt()}°C",
+                    tempFahrenheit = "${weatherData.timelines.hourly[2].values.tempFahrenheit.toInt()}°F"
                 )
 
                 // Save the updated list (optional)
