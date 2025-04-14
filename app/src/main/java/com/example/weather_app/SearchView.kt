@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
-import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.searchdemo.database.CityDatabase
-import com.example.searchdemo.viewmodel.CityViewModel
 import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
@@ -19,8 +17,8 @@ import com.example.weather_app.tools.refreshWeatherData
 import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
-    private val cityViewModel: CityViewModel by viewModels()
-    private lateinit var list: ArrayAdapter<String>
+
+    private lateinit var SearchView: AutoCompleteTextView
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +39,9 @@ class SearchView : AppCompatActivity() {
             insets
         }
 
-        val database = CityDatabase.getInstance(this)
-        CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
-
+        // Initialize UI components
+        SearchView = binding.SearchED
+        SearchView
 
         val weatherList = SharedPrefHelper.getWeatherList(this)
         val adapter = WeatherAdapter(this, weatherList) { selectedItem ->
@@ -55,21 +53,28 @@ class SearchView : AppCompatActivity() {
         }
         binding.recycler.adapter = adapter
 
-        binding.backbutton.setOnClickListener {
-            finish()
+        binding.swiperefresh.setOnRefreshListener {
+            refreshWeatherData(binding, "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk")
+            binding.swiperefresh.isRefreshing = false
         }
 
-        binding.SeachED.setOnTouchListener { v, event ->
+        // Initialize database
+        val database = CityDatabase.getInstance(this)
+        if (!SharedPrefHelper.areCitiesImported(this)) {
+            CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
+        }
+
+        binding.SearchED.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                val drawableStart = binding.SeachED.compoundDrawables[0] // Left Drawable
+                val drawableStart = binding.SearchED.compoundDrawables[0] // Left Drawable
 
                 if (drawableStart != null) {
                     val drawableWidth = drawableStart.bounds.width()
                     val touchX = event.rawX
 
                     // Check if the touch is within the drawableStart area
-                    if (touchX <= (binding.SeachED.left + drawableWidth + binding.SeachED.paddingStart)) {
-                        val cityName = binding.SeachED.text.toString().trim()
+                    if (touchX <= (binding.SearchED.left + drawableWidth + binding.SearchED.paddingStart)) {
+                        val cityName = binding.SearchED.text.toString().trim()
                         if (cityName.isNotEmpty()) {
                             val intent = Intent(this, MainActivity::class.java)
                             val gson = Gson()
@@ -85,15 +90,9 @@ class SearchView : AppCompatActivity() {
             false
         }
 
-        binding.SeachED.setOnItemClickListener { _, _, position, _ ->
-            val selectedCity = list.getItem(position)
-            binding.SeachED.setText(selectedCity)
-        }
-        binding.swiperefresh.setOnRefreshListener {
-            refreshWeatherData(binding, "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk")
-            binding.swiperefresh.isRefreshing = false
+        // Back button
+        binding.backbutton.setOnClickListener {
+            finish()
         }
     }
-
-
 }

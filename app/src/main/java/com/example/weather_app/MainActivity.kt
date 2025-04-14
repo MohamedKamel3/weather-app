@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk"
+    private val apiKey = "JOjnQGyQdlHRtfnbRF6y2goDoXuw5Rjo"
     private lateinit var weatherDataa: FullData
 
 
@@ -49,12 +49,18 @@ class MainActivity : AppCompatActivity() {
         // Update the button text based on new state
         binding.changeDG.text = if (!isCelsiuss) "°C" else "°F"
 
+        binding.searchButton.isEnabled = false
+        binding.tempChangeButton.isEnabled = false
+
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, binding.root.context)
+
 
         if (intent.hasExtra("FULL_DATA")) {
             val json = intent.getStringExtra("FULL_DATA")
             json?.let {
+                binding.searchButton.isEnabled = true
+                binding.tempChangeButton.isEnabled = true
                 val fullData = Gson().fromJson(it, FullData::class.java)
                 weatherDataa = fullData
                 updateUI(this, binding, fullData)
@@ -62,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         } else if (intent.hasExtra("CITY_NAME")) {
             val cityName = intent.getStringExtra("CITY_NAME")
             cityName?.let {
+                binding.searchButton.isEnabled = true
+                binding.tempChangeButton.isEnabled = true
                 binding.progressBar.visibility = View.VISIBLE
                 weatherRepository.fetchWeatherByCity(it) { weatherData ->
                     runOnUiThread {
@@ -79,10 +87,12 @@ class MainActivity : AppCompatActivity() {
                 locationHelper.getCurrentLocation { lat, lon ->
                     runOnUiThread {
                         weatherRepository.fetchWeatherData(lat, lon) { weatherData ->
+                            binding.searchButton.isEnabled = true
+                            binding.tempChangeButton.isEnabled = true
                             binding.progressBar.visibility = View.GONE
                             weatherData?.let {
                                 weatherDataa = it
-                                updateUI(this, binding, it)
+                                updateUI(this, binding, it, true)
                             }
                         }
                     }

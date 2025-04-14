@@ -20,7 +20,8 @@ import getVisibilityDescription
 fun updateUI(
     context: Context,
     binding: ActivityMainBinding,
-    weatherData: FullData
+    weatherData: FullData,
+    isLocation: Boolean = false
 ) {
     val tempList = arrayListOf<tempcard>()
     val daysList = arrayListOf<VDaysForecast>()
@@ -70,7 +71,8 @@ fun updateUI(
             hourlyData[2].values.tempCelsius.toInt().toString(),
             hourlyData[2].values.tempFahrenheit.toInt().toString(),
             weatherStatus.first,
-            weatherStatus.second
+            weatherStatus.second,
+            isLocation
         )
         addWeatherIfNotExists(context, newHistory)
     }

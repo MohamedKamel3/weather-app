@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_app.Models.ForecastDay
 import com.example.weather_app.Models.VDaysForecast
 import com.example.weather_app.R
 
@@ -27,7 +26,7 @@ class Forecast_Adapter(val activity: Activity, val data: ArrayList<VDaysForecast
         return MVH(view)
     }
 
-    override fun getItemCount()= 5
+    override fun getItemCount() = 5
 
     override fun onBindViewHolder(holder: MVH, position: Int) {
         holder.icon.setImageResource(data[position].icon)

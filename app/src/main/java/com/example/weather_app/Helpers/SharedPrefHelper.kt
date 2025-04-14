@@ -8,9 +8,8 @@ import com.google.gson.reflect.TypeToken
 object SharedPrefHelper {
     private const val PREFS_NAME = "weather_prefs"
     private const val SEARCH_HISTORY_KEY = "search_history"
-    private const val CITY_PREFS_NAME = "city_name"
     private const val KEY_IS_CELSIUS = "is_celsius"
-
+    private const val KEY_CITIES_IMPORTED = "cities_imported"
 
     fun saveWeatherList(context: Context, weatherList: MutableList<WeatherData>) {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -22,9 +21,13 @@ object SharedPrefHelper {
 
     fun getWeatherList(context: Context): MutableList<WeatherData> {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val json = sharedPref.getString(SEARCH_HISTORY_KEY, "[]") // Default to empty list
+        val json = sharedPref.getString(SEARCH_HISTORY_KEY, "[]") ?: "[]"
         val type = object : TypeToken<MutableList<WeatherData>>() {}.type
-        return Gson().fromJson(json, type)
+        return try {
+            Gson().fromJson(json, type) ?: mutableListOf()
+        } catch (e: Exception) {
+            mutableListOf() // Return empty list on error
+        }
     }
 
     fun saveTemperatureUnit(context: Context, isCelsius: Boolean) {
@@ -37,4 +40,15 @@ object SharedPrefHelper {
         return prefs.getBoolean(KEY_IS_CELSIUS, true)
     }
 
+    // New: Check if cities have been imported
+    fun areCitiesImported(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_CITIES_IMPORTED, false)
+    }
+
+    // New: Mark cities as imported
+    fun setCitiesImported(context: Context, imported: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean(KEY_CITIES_IMPORTED, imported).apply()
+    }
 }

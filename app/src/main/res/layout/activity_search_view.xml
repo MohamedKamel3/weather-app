@@ -36,17 +36,16 @@
         </FrameLayout>
 
         <AutoCompleteTextView
-            android:id="@+id/SeachED"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
+            android:id="@+id/SearchED"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/box2"
-            android:completionThreshold="1"
             android:drawableStart="@drawable/img_1"
             android:gravity="center"
             android:hint="Search location .."
             android:inputType="text"
-            android:paddingStart="20dp" />
+            android:padding="10dp" />
 
     </LinearLayout>
 

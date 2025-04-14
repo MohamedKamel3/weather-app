@@ -1,9 +1,12 @@
 package com.example.searchdemo.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.weather_app.Helpers.SharedPrefHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,6 +18,10 @@ import java.io.InputStream
 abstract class CityDatabase : RoomDatabase() {
     abstract fun cityDao(): CityDao
 
+    fun getSQLiteDatabase(): SupportSQLiteDatabase {
+        return this.openHelper.writableDatabase
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: CityDatabase? = null
@@ -22,7 +29,7 @@ abstract class CityDatabase : RoomDatabase() {
         fun getInstance(context: Context): CityDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext, // Fix: Use applicationContext
+                    context.applicationContext,
                     CityDatabase::class.java,
                     "city_database"
                 ).build()
@@ -31,69 +38,83 @@ abstract class CityDatabase : RoomDatabase() {
             }
         }
 
+        fun searchCities(context: Context, query: String): LiveData<List<City>> {
+            val database = getInstance(context)
+            return database.cityDao().searchCities(query)
+        }
+
         fun importCitiesFromExcel(context: Context, cityDao: CityDao, fileName: String) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val inputStream: InputStream = context.assets.open(fileName)
-                    WorkbookFactory.create(inputStream).use { workbook ->
-                        val sheet = workbook.getSheetAt(0) // First sheet
-                        val citiesList = mutableListOf<City>()
+                    inputStream.use { stream ->
+                        WorkbookFactory.create(stream).use { workbook ->
+                            val sheet = workbook.getSheetAt(0)
+                            val citiesList = mutableListOf<City>()
+                            var hasValidData = false
 
-                        for (row in sheet) {
-                            if (row.rowNum == 0) continue // Skip header row
+                            for (row in sheet) {
+                                if (row.rowNum == 0) continue
 
-                            try {
-                                val cityName = row.getCell(0)?.stringCellValue?.trim() ?: ""
+                                try {
+                                    val cityName = row.getCell(0)?.stringCellValue?.trim() ?: ""
+                                    val lat = when (row.getCell(1)?.cellType) {
+                                        org.apache.poi.ss.usermodel.CellType.NUMERIC -> row.getCell(
+                                            1
+                                        ).numericCellValue
 
-                                val lat = when (row.getCell(1)?.cellType) {
-                                    org.apache.poi.ss.usermodel.CellType.NUMERIC -> row.getCell(1).numericCellValue
-                                    org.apache.poi.ss.usermodel.CellType.STRING -> row.getCell(1).stringCellValue.toDoubleOrNull()
-                                        ?: 0.0
+                                        org.apache.poi.ss.usermodel.CellType.STRING -> row.getCell(1).stringCellValue.toDoubleOrNull()
+                                            ?: 0.0
 
-                                    else -> 0.0
-                                }
-
-                                val lon = when (row.getCell(2)?.cellType) {
-                                    org.apache.poi.ss.usermodel.CellType.NUMERIC -> row.getCell(2).numericCellValue
-                                    org.apache.poi.ss.usermodel.CellType.STRING -> row.getCell(2).stringCellValue.toDoubleOrNull()
-                                        ?: 0.0
-
-                                    else -> 0.0
-                                }
-
-                                val country = row.getCell(3)?.stringCellValue?.trim() ?: ""
-
-                                if (cityName.isNotEmpty() && country.isNotEmpty()) {
-                                    citiesList.add(
-                                        City(
-                                            name = cityName,
-                                            country = country,
-                                            lat = lat,
-                                            lon = lon
-                                        )
-                                    )
-                                }
-
-                                // Batch insert every 500 entries
-                                if (citiesList.size >= 500) {
-                                    withContext(Dispatchers.IO) { // Fix: Ensure we call suspend function in coroutine
-                                        cityDao.insertCities(citiesList)
+                                        else -> 0.0
                                     }
-                                    citiesList.clear()
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace() // Log individual row errors
-                            }
-                        }
+                                    val lon = when (row.getCell(2)?.cellType) {
+                                        org.apache.poi.ss.usermodel.CellType.NUMERIC -> row.getCell(
+                                            2
+                                        ).numericCellValue
 
-                        // Insert remaining cities
-                        if (citiesList.isNotEmpty()) {
-                            withContext(Dispatchers.IO) { // Fix: Call inside coroutine scope
-                                cityDao.insertCities(citiesList)
+                                        org.apache.poi.ss.usermodel.CellType.STRING -> row.getCell(2).stringCellValue.toDoubleOrNull()
+                                            ?: 0.0
+
+                                        else -> 0.0
+                                    }
+                                    val country = row.getCell(3)?.stringCellValue?.trim() ?: ""
+
+                                    if (cityName.isNotEmpty() && country.isNotEmpty()) {
+                                        citiesList.add(
+                                            City(
+                                                name = cityName,
+                                                country = country,
+                                                lat = lat,
+                                                lon = lon
+                                            )
+                                        )
+                                        hasValidData = true
+                                    }
+
+                                    if (citiesList.size >= 500) {
+                                        withContext(Dispatchers.IO) {
+                                            cityDao.insertCities(citiesList)
+                                        }
+                                        citiesList.clear()
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+
+                            if (citiesList.isNotEmpty()) {
+                                withContext(Dispatchers.IO) {
+                                    cityDao.insertCities(citiesList)
+                                }
+                                hasValidData = true
+                            }
+
+                            if (hasValidData) {
+                                SharedPrefHelper.setCitiesImported(context, true)
                             }
                         }
                     }
-                    inputStream.close()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

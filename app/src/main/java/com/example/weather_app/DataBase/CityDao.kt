@@ -13,4 +13,8 @@ interface CityDao {
 
     @Query("SELECT * FROM cities WHERE name LIKE :query || '%' ORDER BY name ASC")
     fun searchCities(query: String): LiveData<List<City>>
+
+    @Query("SELECT * FROM cities")
+    fun getAllCities(): List<City>
+
 }
