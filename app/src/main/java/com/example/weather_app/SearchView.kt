@@ -3,7 +3,6 @@ package com.example.weather_app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.MotionEvent
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -65,32 +64,6 @@ class SearchView : AppCompatActivity() {
         val database = CityDatabase.getInstance(this)
         if (!SharedPrefHelper.areCitiesImported(this)) {
             CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
-        }
-
-        binding.SearchED.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                val drawableStart = binding.SearchED.compoundDrawables[0] // Left Drawable
-
-                if (drawableStart != null) {
-                    val drawableWidth = drawableStart.bounds.width()
-                    val touchX = event.rawX
-
-                    // Check if the touch is within the drawableStart area
-                    if (touchX <= (binding.SearchED.left + drawableWidth + binding.SearchED.paddingStart)) {
-                        val cityName = binding.SearchED.text.toString().trim()
-                        if (cityName.isNotEmpty()) {
-                            val intent = Intent(this, MainActivity::class.java)
-                            val gson = Gson()
-                            val json = gson.toJson(cityName)
-                            intent.putExtra("CITY_NAME", json)
-                            startActivity(intent)
-                            finish()
-                        }
-                        return@setOnTouchListener true
-                    }
-                }
-            }
-            false
         }
 
         // Back button

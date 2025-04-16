@@ -15,9 +15,16 @@ fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
 
         weatherRepository.fetchWeatherByCity(city) { weatherData ->
             weatherData?.let {
+                val weatherStatus = getWeatherStatus(
+                    weatherData.timelines.hourly[2].values.weatherCode.toInt(),
+                    parseDateTime(weatherData.timelines.hourly[2].date).time24
+                )
                 // Update the list with a new object
                 weatherList[index] = weatherDataa.copy(
                     tempCelsius = "${weatherData.timelines.hourly[2].values.tempCelsius.toInt()}",
+                    fullData = weatherData,
+                    description = weatherStatus.first,
+                    icon = weatherStatus.second,
                     tempFahrenheit = "${weatherData.timelines.hourly[2].values.tempFahrenheit.toInt()}"
                 )
 
