@@ -21,7 +21,8 @@ fun updateUI(
     context: Context,
     binding: ActivityMainBinding,
     weatherData: FullData,
-    isLocation: Boolean = false
+    isLocation: Boolean = false,
+    city: String = ""
 ) {
     val tempList = arrayListOf<tempcard>()
     val daysList = arrayListOf<VDaysForecast>()
@@ -59,15 +60,28 @@ fun updateUI(
     binding.VisibilityValue.text = "${minutelyData[2].values.visibility} km"
     binding.VisibilityDesc.text = getVisibilityDescription(minutelyData[2].values.visibility)
 
-    // Get location name asynchronously
-    getFullLocationName(context, lat, lon) { locationName ->
-        binding.TempLocation.text = locationName
-    }
+    if (city == "") {
+        getFullLocationName(context, lat, lon) { locationName ->
+            binding.TempLocation.text = locationName
+        }
+        getLocationName(context, lat, lon) { locationName ->
+            val newHistory = WeatherData(
+                weatherData,
+                locationName,
+                hourlyData[2].values.tempCelsius.toInt().toString(),
+                hourlyData[2].values.tempFahrenheit.toInt().toString(),
+                weatherStatus.first,
+                weatherStatus.second,
+                isLocation
+            )
+            addWeatherIfNotExists(context, newHistory)
+        }
+    } else {
+        binding.TempLocation.text = city
 
-    getLocationName(context, lat, lon) { locationName ->
         val newHistory = WeatherData(
             weatherData,
-            locationName,
+            city,
             hourlyData[2].values.tempCelsius.toInt().toString(),
             hourlyData[2].values.tempFahrenheit.toInt().toString(),
             weatherStatus.first,
@@ -76,6 +90,7 @@ fun updateUI(
         )
         addWeatherIfNotExists(context, newHistory)
     }
+
 
     if (isCelsius) {
         binding.TempValue.text = "${hourlyData[2].values.tempCelsius.toInt()}°C"

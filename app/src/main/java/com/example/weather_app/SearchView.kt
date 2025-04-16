@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
-import android.widget.AutoCompleteTextView
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,7 +18,7 @@ import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
 
-    private lateinit var SearchView: AutoCompleteTextView
+    private lateinit var SearchView: Button
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,10 @@ class SearchView : AppCompatActivity() {
 
         // Initialize UI components
         SearchView = binding.SearchED
-        SearchView
+        SearchView.setOnClickListener {
+            val intent = Intent(this, SearchPage::class.java)
+            startActivity(intent)
+        }
 
         val weatherList = SharedPrefHelper.getWeatherList(this)
         val adapter = WeatherAdapter(this, weatherList) { selectedItem ->

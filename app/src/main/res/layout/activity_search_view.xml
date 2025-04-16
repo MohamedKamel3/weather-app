@@ -35,17 +35,18 @@
 
         </FrameLayout>
 
-        <AutoCompleteTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/SearchED"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/box2"
-            android:drawableStart="@drawable/img_1"
+            android:backgroundTint="@android:color/black"
             android:gravity="center"
-            android:hint="Search location .."
-            android:inputType="text"
-            android:padding="10dp" />
+            android:text="Search location ..."
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/img_1" />
 
     </LinearLayout>
 

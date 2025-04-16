@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "JOjnQGyQdlHRtfnbRF6y2goDoXuw5Rjo"
+    private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
     private lateinit var weatherDataa: FullData
 
 
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.GONE
                         weatherData?.let {
                             weatherDataa = it
-                            updateUI(this, binding, it)
+                            updateUI(this, binding, it, city = cityName)
                         }
                     }
                 }
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                             binding.progressBar.visibility = View.GONE
                             weatherData?.let {
                                 weatherDataa = it
-                                updateUI(this, binding, it, true)
+                                updateUI(this, binding, it, isLocation = true)
                             }
                         }
                     }

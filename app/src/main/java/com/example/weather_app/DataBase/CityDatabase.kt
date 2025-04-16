@@ -1,11 +1,9 @@
 package com.example.searchdemo.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.weather_app.Helpers.SharedPrefHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +15,6 @@ import java.io.InputStream
 @Database(entities = [City::class], version = 1, exportSchema = false)
 abstract class CityDatabase : RoomDatabase() {
     abstract fun cityDao(): CityDao
-
-    fun getSQLiteDatabase(): SupportSQLiteDatabase {
-        return this.openHelper.writableDatabase
-    }
 
     companion object {
         @Volatile
@@ -36,11 +30,6 @@ abstract class CityDatabase : RoomDatabase() {
                 INSTANCE = instance
                 instance
             }
-        }
-
-        fun searchCities(context: Context, query: String): LiveData<List<City>> {
-            val database = getInstance(context)
-            return database.cityDao().searchCities(query)
         }
 
         fun importCitiesFromExcel(context: Context, cityDao: CityDao, fileName: String) {
