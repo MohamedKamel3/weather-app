@@ -1,7 +1,5 @@
 package com.example.weather_app.Composable
 
-import android.app.Activity
-import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -35,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.searchdemo.database.City
 import com.example.searchdemo.database.CityDatabase
-import com.example.weather_app.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,27 +94,10 @@ fun SearchScreen(
                     cursorColor = Color.Black
                 ),
                 leadingIcon = {
-                    IconButton(
-                        onClick = {
-                            val cityName = searchQuery.trim()
-                            if (cityName.isNotEmpty()) {
-                                // Create intent
-                                val intent = Intent(context, MainActivity::class.java).apply {
-                                    putExtra("CITY_NAME", cityName)
-                                    // Alternative with Gson if you need complex objects:
-                                    // val gson = Gson()
-                                    // putExtra("CITY_NAME", gson.toJson(cityName))
-                                }
-                                context.startActivity(intent)
-                                (context as Activity).finish()
-                            }
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search"
+                    )
                 },
             )
         }
