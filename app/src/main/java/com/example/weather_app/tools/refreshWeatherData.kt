@@ -13,7 +13,7 @@ fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
     for ((index, weatherDataa) in weatherList.withIndex()) {
         val city = weatherDataa.cityName
 
-        weatherRepository.fetchWeatherByCity(city) { weatherData ->
+        weatherRepository.fetchWeatherData(city) { weatherData ->
             weatherData?.let {
                 val weatherStatus = getWeatherStatus(
                     weatherData.timelines.hourly[2].values.weatherCode.toInt(),

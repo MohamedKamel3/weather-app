@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk"
+    private val apiKey = "JOjnQGyQdlHRtfnbRF6y2goDoXuw5Rjo"
     private lateinit var weatherDataa: FullData
 
 
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         binding.tempChangeButton.isEnabled = false
 
         locationHelper = LocationHelper(this)
-        weatherRepository = WeatherRepository(apiKey, binding.root.context)
+        weatherRepository = WeatherRepository(apiKey, this)
 
 
         if (intent.hasExtra("FULL_DATA")) {
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 binding.searchButton.isEnabled = true
                 binding.tempChangeButton.isEnabled = true
                 binding.progressBar.visibility = View.VISIBLE
-                weatherRepository.fetchWeatherByCity(it) { weatherData ->
+                weatherRepository.fetchWeatherData(it) { weatherData ->
                     runOnUiThread {
                         binding.progressBar.visibility = View.GONE
                         weatherData?.let {
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
             locationHelper.requestLocationPermission {
                 locationHelper.getCurrentLocation { lat, lon ->
                     runOnUiThread {
-                        weatherRepository.fetchWeatherData(lat, lon) { weatherData ->
+                        weatherRepository.fetchWeatherData("$lat, $lon") { weatherData ->
                             binding.searchButton.isEnabled = true
                             binding.tempChangeButton.isEnabled = true
                             binding.progressBar.visibility = View.GONE

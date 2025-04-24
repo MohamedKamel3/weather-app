@@ -1,10 +1,16 @@
 package com.example.weather_app.network
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.example.weather_app.MainActivity
+import com.example.weather_app.Models.ApiErrorResponse
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.WeatherService
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,47 +28,53 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
 
     private val weatherService = retrofit.create(WeatherService::class.java)
 
-    fun fetchWeatherData(lat: Double, lon: Double, onResult: (FullData?) -> Unit) {
-        weatherService.getWeatherDatanow("$lat, $lon", apiKey)
-            .enqueue(object : Callback<FullData> {
-                override fun onResponse(call: Call<FullData>, response: Response<FullData>) {
-                    if (response.isSuccessful) {
-                        onResult(response.body())
-
-                    } else {
-                        onResult(null)
-                        Toast.makeText(binding, "error happened", Toast.LENGTH_SHORT).show()
-
-                    }
-                }
-
-                override fun onFailure(call: Call<FullData>, t: Throwable) {
-                    Log.e("WeatherRepository", "Error: ${t.message}")
-                    onResult(null)
-                    Toast.makeText(binding, "error ", Toast.LENGTH_SHORT).show()
-
-                }
-            })
-    }
-
-    fun fetchWeatherByCity(cityName: String, onResult: (FullData?) -> Unit) {
-        weatherService.getWeatherDatanow(cityName, apiKey)
+    fun fetchWeatherData(
+        locationQuery: String,
+        onResult: (FullData?) -> Unit
+    ) {
+        weatherService.getWeatherDatanow(locationQuery, apiKey)
             .enqueue(object : Callback<FullData> {
                 override fun onResponse(call: Call<FullData>, response: Response<FullData>) {
                     if (response.isSuccessful) {
                         onResult(response.body())
                     } else {
-                        Toast.makeText(binding, "error happened", Toast.LENGTH_SHORT).show()
+                        val error = parseErrorBody(response)
+                        Log.e("WeatherAPI", "Error ${error?.code}: ${error?.message}")
+                        AlertDialog.Builder(binding)
+                            .setTitle(error?.type ?: "An error occurred")
+                            .setMessage(error?.message ?: "An error occurred")
+                            .setPositiveButton("Reload") { _, _ ->
+                                val i = Intent(binding, MainActivity::class.java)
+                                binding.startActivity(i)
+                                (binding as? Activity)?.finish()
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+                            .show()
                         onResult(null)
                     }
                 }
 
                 override fun onFailure(call: Call<FullData>, t: Throwable) {
-                    Log.e("WeatherRepository", "Error: ${t.message}")
-                    Toast.makeText(binding, "error", Toast.LENGTH_SHORT).show()
+                    Log.e("WeatherAPI", "Network Failure: ${t.localizedMessage}")
+                    Toast.makeText(
+                        binding,
+                        "Network error: ${t.localizedMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
                     onResult(null)
                 }
             })
     }
+
+    private fun parseErrorBody(response: Response<*>): ApiErrorResponse? {
+        return try {
+            val errorBody = response.errorBody()?.string()
+            val gson = Gson()
+            gson.fromJson(errorBody, ApiErrorResponse::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 
 }
