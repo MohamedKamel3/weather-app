@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.searchdemo.database.CityDatabase
 import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
@@ -50,6 +49,7 @@ class SearchView : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             val json = Gson().toJson(selectedItem.fullData)
             intent.putExtra("FULL_DATA", json)
+            intent.putExtra("CITY_NAME", selectedItem.cityName)
             startActivity(intent)
             finish()
         }
@@ -58,12 +58,6 @@ class SearchView : AppCompatActivity() {
         binding.swiperefresh.setOnRefreshListener {
             refreshWeatherData(binding, "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk")
             binding.swiperefresh.isRefreshing = false
-        }
-
-        // Initialize database
-        val database = CityDatabase.getInstance(this)
-        if (!SharedPrefHelper.areCitiesImported(this)) {
-            CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
         }
 
         // Back button

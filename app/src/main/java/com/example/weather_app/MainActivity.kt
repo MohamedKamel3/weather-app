@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.searchdemo.database.CityDatabase
 import com.example.weather_app.Helpers.LocationHelper
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
+    private val apiKey = "qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk"
     private lateinit var weatherDataa: FullData
 
 
@@ -48,6 +49,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // Initialize database
+        val database = CityDatabase.getInstance(this)
+        if (!SharedPrefHelper.areCitiesImported(this)) {
+            CityDatabase.importCitiesFromExcel(this, database.cityDao(), "cities.xlsx")
+        }
+
         // Get the current unit state
         val isCelsiuss = SharedPrefHelper.getTemperatureUnit(this)
 
@@ -63,12 +70,14 @@ class MainActivity : AppCompatActivity() {
 
         if (intent.hasExtra("FULL_DATA")) {
             val json = intent.getStringExtra("FULL_DATA")
+            val cityName = intent.getStringExtra("CITY_NAME") ?: ""
+
             json?.let {
                 binding.searchButton.isEnabled = true
                 binding.tempChangeButton.isEnabled = true
                 val fullData = Gson().fromJson(it, FullData::class.java)
                 weatherDataa = fullData
-                updateUI(this, binding, fullData)
+                updateUI(this, binding, fullData, city = cityName)
             }
         } else if (intent.hasExtra("CITY_NAME")) {
             val cityName = intent.getStringExtra("CITY_NAME")

@@ -597,6 +597,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/textViewAvr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Average Temperature"
+                    android:textColor="#ffffff"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/Forecast_10Day_RV"
                     android:layout_width="match_parent"
@@ -607,10 +619,8 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
-                    tools:listitem="@layout/forecast_10day"
-
-                    />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewAvr"
+                    tools:listitem="@layout/forecast_10day" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
