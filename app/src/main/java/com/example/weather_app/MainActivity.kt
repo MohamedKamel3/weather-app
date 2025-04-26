@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.searchdemo.database.CityDatabase
 import com.example.weather_app.Helpers.LocationHelper
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
+import com.example.weather_app.dataBase.CityDatabase
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.network.WeatherRepository
 import com.example.weather_app.tools.changeTemperatureUnits

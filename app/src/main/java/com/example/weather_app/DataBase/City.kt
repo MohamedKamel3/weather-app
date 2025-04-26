@@ -1,4 +1,4 @@
-package com.example.searchdemo.database
+package com.example.weather_app.dataBase
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

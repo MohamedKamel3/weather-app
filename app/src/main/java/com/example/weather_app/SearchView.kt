@@ -8,8 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
+import com.example.weather_app.adapters.WeatherAdapter
 import com.example.weather_app.databinding.ActivitySearchViewBinding
 import com.example.weather_app.tools.refreshWeatherData
 import com.example.weather_app.tools.updateSearchViewUI

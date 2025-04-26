@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.example.searchdemo.database.CityDatabase
 import com.example.weather_app.Composable.SearchScreen
+import com.example.weather_app.dataBase.CityDatabase
 import com.example.weather_app.ui.theme.Weather_appTheme
 
 class SearchPage : ComponentActivity() {

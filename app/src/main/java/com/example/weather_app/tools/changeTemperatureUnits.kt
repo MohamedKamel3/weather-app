@@ -1,11 +1,11 @@
 package com.example.weather_app.tools
 
 import android.app.Activity
-import com.example.weather_app.Adapters.Forecast_Adapter
-import com.example.weather_app.Adapters.TempCard_Adapter
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.Models.VDaysForecast
 import com.example.weather_app.Models.tempcard
+import com.example.weather_app.adapters.Forecast_Adapter
+import com.example.weather_app.adapters.TempCard_Adapter
 import com.example.weather_app.databinding.ActivityMainBinding
 
 fun changeTemperatureUnits(

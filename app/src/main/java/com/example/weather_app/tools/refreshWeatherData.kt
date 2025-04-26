@@ -1,8 +1,8 @@
 package com.example.weather_app.tools
 
 import android.widget.Toast
-import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
+import com.example.weather_app.adapters.WeatherAdapter
 import com.example.weather_app.databinding.ActivitySearchViewBinding
 import com.example.weather_app.network.WeatherRepository
 
