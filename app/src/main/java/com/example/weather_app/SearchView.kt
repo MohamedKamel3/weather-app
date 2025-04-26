@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -90,8 +91,25 @@ class SearchView : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 when (direction) {
                     ItemTouchHelper.LEFT -> {
-                        adapter.deleteItem(viewHolder.adapterPosition)
-                        SharedPrefHelper.saveWeatherList(this@SearchView, weatherList)
+                        val position = viewHolder.adapterPosition
+
+                        AlertDialog.Builder(viewHolder.itemView.context)
+                            .setTitle("Delete City")
+                            .setMessage("Are you sure you want to delete this City?")
+                            .setPositiveButton("Yes") { dialog, _ ->
+                                adapter.deleteItem(position)
+                                SharedPrefHelper.saveWeatherList(
+                                    this@SearchView,
+                                    weatherList
+                                )
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("No") { dialog, _ ->
+                                adapter.notifyItemChanged(position) // Restore the item visually
+                                dialog.dismiss()
+                            }
+                            .setCancelable(false)
+                            .show()
                     }
                 }
             }
