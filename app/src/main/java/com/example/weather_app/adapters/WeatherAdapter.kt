@@ -40,6 +40,11 @@ class WeatherAdapter(
         holder.itemView.setOnClickListener { onItemClick(weather) }
     }
 
+    fun deleteItem(position: Int) {
+        weatherList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     override fun getItemCount(): Int = weatherList.size
 
     /**
