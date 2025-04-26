@@ -74,7 +74,7 @@ fun updateUI(
                 weatherStatus.second,
                 isLocation
             )
-            addWeatherIfNotExists(context, newHistory)
+            SharedPrefHelper.saveCurrentLocationWeather(context, newHistory)
         }
     } else {
         binding.TempLocation.text = city

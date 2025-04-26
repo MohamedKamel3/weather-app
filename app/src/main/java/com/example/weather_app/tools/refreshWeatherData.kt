@@ -1,5 +1,6 @@
 package com.example.weather_app.tools
 
+import android.widget.Toast
 import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
@@ -42,4 +43,5 @@ fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
             }
         }
     }
+    Toast.makeText(binding.root.context, "Refreshed", Toast.LENGTH_SHORT).show()
 }

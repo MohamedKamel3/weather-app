@@ -10,6 +10,26 @@ object SharedPrefHelper {
     private const val SEARCH_HISTORY_KEY = "search_history"
     private const val KEY_IS_CELSIUS = "is_celsius"
     private const val KEY_CITIES_IMPORTED = "cities_imported"
+    private const val CURRENT_LOCATION_WEATHER_KEY = "current_location_weather"
+
+    fun saveCurrentLocationWeather(context: Context, weatherData: WeatherData) {
+        val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        val json = Gson().toJson(weatherData)
+        editor.putString(CURRENT_LOCATION_WEATHER_KEY, json)
+        editor.apply()
+    }
+
+    fun getCurrentLocationWeather(context: Context): WeatherData? {
+        val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val json = sharedPref.getString(CURRENT_LOCATION_WEATHER_KEY, null)
+
+        return if (json != null) {
+            Gson().fromJson(json, WeatherData::class.java)
+        } else {
+            null
+        }
+    }
 
     fun saveWeatherList(context: Context, weatherList: MutableList<WeatherData>) {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

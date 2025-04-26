@@ -12,6 +12,7 @@ import com.example.weather_app.Adapters.WeatherAdapter
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.databinding.ActivitySearchViewBinding
 import com.example.weather_app.tools.refreshWeatherData
+import com.example.weather_app.tools.updateSearchViewUI
 import com.google.gson.Gson
 
 class SearchView : AppCompatActivity() {
@@ -37,6 +38,14 @@ class SearchView : AppCompatActivity() {
             insets
         }
 
+        val currentLocation = SharedPrefHelper.getCurrentLocationWeather(this)
+        updateSearchViewUI(this, binding, currentLocation)
+
+        binding.currentLocationCard.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         // Initialize UI components
         SearchView = binding.SearchED
         SearchView.setOnClickListener {
