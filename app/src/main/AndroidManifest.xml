@@ -25,13 +25,19 @@
             android:name=".SearchPage"
             android:exported="false"
             android:label="@string/title_activity_search_page"
-            android:theme="@style/Theme.Weather_app" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Weather_app"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".SearchView"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
