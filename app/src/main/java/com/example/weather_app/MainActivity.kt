@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
             Log.d("WeatherWorker", "Work not scheduled")
         }
 
+        binding.locationImage.visibility = View.GONE
+
         // Initialize database
         val database = CityDatabase.getInstance(this)
         if (!SharedPrefHelper.areCitiesImported(this)) {
@@ -111,6 +113,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             binding.progressBar.visibility = View.VISIBLE
+
             locationHelper.requestLocationPermission {
                 locationHelper.getCurrentLocation { lat, lon ->
                     runOnUiThread {
@@ -121,6 +124,8 @@ class MainActivity : AppCompatActivity() {
                             weatherData?.let {
                                 weatherDataa = it
                                 updateUI(this, binding, it, isLocation = true)
+                                binding.locationImage.visibility = View.VISIBLE
+
                             }
                         }
                     }
