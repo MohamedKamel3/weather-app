@@ -3,29 +3,34 @@ package com.example.weather_app
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.work.WorkManager
 import com.example.weather_app.Helpers.LocationHelper
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.dataBase.CityDatabase
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.network.WeatherRepository
+import com.example.weather_app.notifications.NotificationHelper
 import com.example.weather_app.tools.changeTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
+import com.example.weather_app.worker.WeatherWorker
 import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "JOjnQGyQdlHRtfnbRF6y2goDoXuw5Rjo"
+    private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
     private lateinit var weatherDataa: FullData
+    private lateinit var worker: WorkManager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +54,16 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        NotificationHelper.createChannel(this)
+
+        worker = WorkManager.getInstance(this)
+        if (WeatherWorker.isWorkScheduled(this)) {
+            Log.d("WeatherWorker", "Work scheduled")
+        } else {
+            WeatherWorker.scheduleWork(this, apiKey)
+            Log.d("WeatherWorker", "Work not scheduled")
+        }
+
         // Initialize database
         val database = CityDatabase.getInstance(this)
         if (!SharedPrefHelper.areCitiesImported(this)) {
@@ -66,7 +81,6 @@ class MainActivity : AppCompatActivity() {
 
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, this)
-
 
         if (intent.hasExtra("FULL_DATA")) {
             val json = intent.getStringExtra("FULL_DATA")

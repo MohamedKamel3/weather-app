@@ -90,4 +90,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("it.xabaras.android:recyclerview-swipedecorator:1.4")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+
 }

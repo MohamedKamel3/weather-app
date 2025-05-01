@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import com.example.weather_app.MainActivity
 
 
@@ -21,7 +22,7 @@ fun CityItem(city: String, context: Context) {
         modifier = Modifier
             .padding(vertical = 8.dp)
             .clickable {
-                val cityName = city.replace(",", "").trim()
+                val cityName = city.replace(Regex("[^\\p{L}\\s]"), "").trim()
                 if (cityName.isNotEmpty()) {
                     // Create intent
                     val intent = Intent(context, MainActivity::class.java).apply {
@@ -31,7 +32,7 @@ fun CityItem(city: String, context: Context) {
                         // putExtra("CITY_NAME", gson.toJson(cityName))
                     }
                     context.startActivity(intent)
-                    (context as Activity).finish()
+                    ActivityCompat.finishAffinity(context as Activity)
                 }
             }
     ) {

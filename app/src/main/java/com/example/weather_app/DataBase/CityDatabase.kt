@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.weather_app.Helpers.SharedPrefHelper
+import com.example.weather_app.tools.normalizeToEnglish
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +47,8 @@ abstract class CityDatabase : RoomDatabase() {
                                 if (row.rowNum == 0) continue
 
                                 try {
-                                    val cityName = row.getCell(0)?.stringCellValue?.trim() ?: ""
+                                    val cityName =
+                                        normalizeToEnglish(row.getCell(0)?.stringCellValue?.trim())
                                     val lat = when (row.getCell(1)?.cellType) {
                                         org.apache.poi.ss.usermodel.CellType.NUMERIC -> row.getCell(
                                             1
@@ -70,15 +72,19 @@ abstract class CityDatabase : RoomDatabase() {
                                     val country = row.getCell(3)?.stringCellValue?.trim() ?: ""
 
                                     if (cityName.isNotEmpty() && country.isNotEmpty()) {
-                                        citiesList.add(
-                                            City(
-                                                name = cityName,
-                                                country = country,
-                                                lat = lat,
-                                                lon = lon
+                                        val exists =
+                                            citiesList.any { it.name == cityName && it.country == country }
+                                        if (!exists) {
+                                            citiesList.add(
+                                                City(
+                                                    name = cityName,
+                                                    country = country,
+                                                    lat = lat,
+                                                    lon = lon
+                                                )
                                             )
-                                        )
-                                        hasValidData = true
+                                            hasValidData = true
+                                        }
                                     }
 
                                     if (citiesList.size >= 500) {

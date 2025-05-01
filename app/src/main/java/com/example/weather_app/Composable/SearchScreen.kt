@@ -32,7 +32,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.weather_app.dataBase.City
 import com.example.weather_app.dataBase.CityDatabase
@@ -56,7 +55,6 @@ fun SearchScreen(
 
     // FocusRequester for auto-focus
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     // Auto focus when composable is launched
     LaunchedEffect(Unit) {

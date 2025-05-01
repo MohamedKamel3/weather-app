@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.weather_app.MainActivity
 import com.example.weather_app.Models.ApiErrorResponse
 import com.example.weather_app.Models.FullData
+import com.example.weather_app.SearchView
 import com.example.weather_app.WeatherService
 import com.google.gson.Gson
 import retrofit2.Call
@@ -46,9 +47,14 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
                             .setPositiveButton("Reload") { _, _ ->
                                 val i = Intent(binding, MainActivity::class.java)
                                 binding.startActivity(i)
-                                (binding as? Activity)?.finish()
+                                (binding as? Activity)?.finishAffinity()
+
                             }
-                            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+                            .setNegativeButton("Cancel") { _, _ ->
+                                val i = Intent(binding, SearchView::class.java)
+                                binding.startActivity(i)
+                                (binding as? Activity)?.finishAffinity()
+                            }
                             .show()
                         onResult(null)
                     }

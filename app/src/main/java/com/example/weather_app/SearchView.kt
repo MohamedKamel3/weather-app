@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -52,7 +53,7 @@ class SearchView : AppCompatActivity() {
         binding.currentLocationCard.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish()
+            ActivityCompat.finishAffinity(this)
         }
         // Initialize UI components
         SearchView = binding.SearchED
@@ -68,7 +69,7 @@ class SearchView : AppCompatActivity() {
             intent.putExtra("FULL_DATA", json)
             intent.putExtra("CITY_NAME", selectedItem.cityName)
             startActivity(intent)
-            finish()
+            ActivityCompat.finishAffinity(this)
         }
 
         val swipeGesture = object : swipeGesture(this) {
@@ -126,6 +127,10 @@ class SearchView : AppCompatActivity() {
 
         // Back button
         binding.backbutton.setOnClickListener {
+            if (isTaskRoot) {
+                val i = Intent(this, MainActivity::class.java)
+                startActivity(i)
+            }
             finish()
         }
     }

@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 
 class LocationHelper(private val activity: AppCompatActivity) {
 
@@ -45,14 +47,33 @@ class LocationHelper(private val activity: AppCompatActivity) {
                 activity, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    onLocationReceived(latitude, longitude)
+            val cancellationTokenSource = CancellationTokenSource()
+
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cancellationTokenSource.token
+            ).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.let { location ->
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+                        onLocationReceived(latitude, longitude)
+                    }
                 } else {
-                    Toast.makeText(activity, "Try Open the Location Settings", Toast.LENGTH_SHORT)
-                        .show()
+                    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            val latitude = location.latitude
+                            val longitude = location.longitude
+                            onLocationReceived(latitude, longitude)
+                        } else {
+                            Toast.makeText(
+                                activity,
+                                "Try Open the Location Settings",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
                 }
             }
         } else {
@@ -75,5 +96,5 @@ class LocationHelper(private val activity: AppCompatActivity) {
             }
             .show()
     }
-    
+
 }
