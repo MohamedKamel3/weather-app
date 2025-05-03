@@ -16,9 +16,9 @@ import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.dataBase.CityDatabase
 import com.example.weather_app.databinding.ActivityMainBinding
-import com.example.weather_app.network.WeatherRepository
 import com.example.weather_app.notifications.NotificationHelper
-import com.example.weather_app.tools.changeTemperatureUnits
+import com.example.weather_app.service.WeatherRepository
+import com.example.weather_app.uii.changeTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
 import com.example.weather_app.worker.WeatherWorker

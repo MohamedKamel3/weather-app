@@ -4,7 +4,7 @@ import android.widget.Toast
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.adapters.WeatherAdapter
 import com.example.weather_app.databinding.ActivitySearchViewBinding
-import com.example.weather_app.network.WeatherRepository
+import com.example.weather_app.service.WeatherRepository
 
 fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
     val context = binding.root.context

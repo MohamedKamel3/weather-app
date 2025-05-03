@@ -35,7 +35,6 @@ object NotificationHelper {
         val pendingIntent = PendingIntent.getActivity(
             context, 200, i, PendingIntent.FLAG_IMMUTABLE
         )
-
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.b21000_fog_light_large2x)
             .setContentTitle(title)

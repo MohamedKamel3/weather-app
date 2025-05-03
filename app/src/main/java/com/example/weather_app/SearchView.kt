@@ -18,7 +18,7 @@ import com.example.weather_app.adapters.WeatherAdapter
 import com.example.weather_app.databinding.ActivitySearchViewBinding
 import com.example.weather_app.tools.refreshWeatherData
 import com.example.weather_app.tools.swipeGesture
-import com.example.weather_app.tools.updateSearchViewUI
+import com.example.weather_app.uii.updateSearchViewUI
 import com.google.gson.Gson
 import java.util.Collections
 

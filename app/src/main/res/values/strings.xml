@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">weather_app</string>
+    <string name="app_name">Skycast</string>
     <string name="title_activity_search_view2">SearchView2</string>
     <string name="title_activity_search_page">SearchPage</string>
     <string name="title_activity_splash_screen">SplashScreen</string>

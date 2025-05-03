@@ -1,4 +1,4 @@
-package com.example.weather_app.tools
+package com.example.weather_app.uii
 
 import android.content.Context
 import com.example.weather_app.Helpers.SharedPrefHelper
@@ -20,7 +20,7 @@ fun updateSearchViewUI(
         "${weatherData?.tempFahrenheit}°F"
     }
 
-    binding.city.setText(weatherData?.cityName)
+    binding.city.setText("${weatherData?.cityName}")
 
-    binding.imgWeatherIcon.setImageResource(weatherData!!.icon)
+    binding.imgWeatherIcon.setImageResource(weatherData?.icon ?: 0)
 }
