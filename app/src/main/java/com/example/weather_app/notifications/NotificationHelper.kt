@@ -29,14 +29,19 @@ object NotificationHelper {
     }
 
     @SuppressLint("MissingPermission")
-    fun showNotification(context: Context, title: String, content: String) {
+    fun showNotification(
+        context: Context,
+        title: String,
+        content: String,
+        icon: Int = R.drawable.b21000_fog_light_large2x
+    ) {
 
         val i = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context, 200, i, PendingIntent.FLAG_IMMUTABLE
         )
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.b21000_fog_light_large2x)
+            .setSmallIcon(icon)
             .setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(true)

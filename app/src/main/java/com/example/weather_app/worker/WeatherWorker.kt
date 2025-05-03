@@ -20,7 +20,9 @@ import androidx.work.WorkerParameters
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.notifications.NotificationHelper
 import com.example.weather_app.service.WeatherRepository
+import com.example.weather_app.tools.getWeatherStatus
 import com.example.weather_app.tools.isCurrentHour
+import com.example.weather_app.tools.parseDateTime
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -96,7 +98,7 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
                 }
             }
 
-            weatherRepository.fetchWeatherData("$lat,$lon") { weatherData ->
+            weatherRepository.fetchWeatherData("$lat,$lon") { weatherData, now ->
                 weatherData?.let {
                     var i = 0
                     val highTemp: Double
@@ -108,19 +110,27 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
                         }
                         i++
                     }
+
                     if (isCelsius) {
                         highTemp =
-                            it.timelines.hourly[i].values.maxTempCelsius
-                        lowTemp = it.timelines.hourly[i].values.minTempCelsius
+                            it.timelines.daily[0].values.maxTempCelsius
+                        lowTemp = it.timelines.daily[0].values.minTempCelsius
                     } else {
                         highTemp =
-                            it.timelines.hourly[i].values.maxTempFahrenheit
-                        lowTemp = it.timelines.hourly[i].values.minTempFahrenheit
-
+                            it.timelines.daily[0].values.maxTempFahrenheit
+                        lowTemp = it.timelines.daily[0].values.minTempFahrenheit
                     }
 
+                    val weatherStatus = getWeatherStatus(
+                        it.timelines.hourly[i].values.weatherCode.toInt(),
+                        parseDateTime(it.timelines.hourly[i].date).time24
+                    )
+
                     NotificationHelper.showNotification(
-                        context, "Weather Alert", "Today's weather:°C"
+                        context,
+                        "Weather Alert",
+                        "Today's weather: ${weatherStatus.first}.\nHigh: $highTemp°C, Low: $lowTemp°C",
+                        weatherStatus.second
                     )
                 }
             }

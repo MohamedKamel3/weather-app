@@ -8,8 +8,8 @@ import android.widget.Toast
 import com.example.weather_app.MainActivity
 import com.example.weather_app.Models.ApiErrorResponse
 import com.example.weather_app.Models.FullData
+import com.example.weather_app.Models.NowData
 import com.example.weather_app.SearchView
-import com.example.weather_app.WeatherService
 import com.example.weather_app.tools.showDialog
 import com.google.gson.Gson
 import retrofit2.Call
@@ -30,13 +30,25 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
 
     fun fetchWeatherData(
         locationQuery: String,
-        onResult: (FullData?) -> Unit
+        onResult: (FullData?, NowData?) -> Unit
     ) {
-        weatherService.getWeatherDatanow(locationQuery, apiKey)
+        var fullData: FullData? = null
+        var nowData: NowData? = null
+
+        var fullDataReceived = false
+        var dayInfoReceived = false
+
+        fun tryCallOnResult() {
+            if (fullDataReceived && dayInfoReceived) {
+                onResult(fullData, nowData)
+            }
+        }
+
+        weatherService.getWeatherData(locationQuery, apiKey)
             .enqueue(object : Callback<FullData> {
                 override fun onResponse(call: Call<FullData>, response: Response<FullData>) {
                     if (response.isSuccessful) {
-                        onResult(response.body())
+                        fullData = response.body()
                     } else {
                         val error = parseErrorBody(response)
                         Log.e("WeatherAPI", "Error ${error?.code}: ${error?.message}")
@@ -48,14 +60,16 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
                                 val i = Intent(binding, SearchView::class.java)
                                 binding.startActivity(i)
                                 (binding as? Activity)?.finishAffinity()
-                            })
-                        {
-                            val i = Intent(binding, MainActivity::class.java)
-                            binding.startActivity(i)
-                            (binding as? Activity)?.finishAffinity()
-                        }
-                        onResult(null)
+                            },
+                            {
+                                val i = Intent(binding, MainActivity::class.java)
+                                binding.startActivity(i)
+                                (binding as? Activity)?.finishAffinity()
+                            }
+                        )
                     }
+                    fullDataReceived = true
+                    tryCallOnResult()
                 }
 
                 override fun onFailure(call: Call<FullData>, t: Throwable) {
@@ -65,10 +79,52 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
                         "Network error: ${t.localizedMessage}",
                         Toast.LENGTH_LONG
                     ).show()
-                    onResult(null)
+                    fullDataReceived = true
+                    tryCallOnResult()
+                }
+            })
+
+        weatherService.getWeatherDataNow(locationQuery, apiKey)
+            .enqueue(object : Callback<NowData> {
+                override fun onResponse(call: Call<NowData>, response: Response<NowData>) {
+                    if (response.isSuccessful) {
+                        nowData = response.body()
+                    } else {
+                        val error = parseErrorBody(response)
+                        Log.e("WeatherAPI", "Error ${error?.code}: ${error?.message}")
+                        showDialog(
+                            binding,
+                            "Error",
+                            "Error ${error?.code}: ${error?.message}",
+                            {
+                                val i = Intent(binding, SearchView::class.java)
+                                binding.startActivity(i)
+                                (binding as? Activity)?.finishAffinity()
+                            },
+                            {
+                                val i = Intent(binding, MainActivity::class.java)
+                                binding.startActivity(i)
+                                (binding as? Activity)?.finishAffinity()
+                            }
+                        )
+                    }
+                    dayInfoReceived = true
+                    tryCallOnResult()
+                }
+
+                override fun onFailure(call: Call<NowData>, t: Throwable) {
+                    Log.e("WeatherAPI", "Network Failure: ${t.localizedMessage}")
+                    Toast.makeText(
+                        binding,
+                        "Network error: ${t.localizedMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    dayInfoReceived = true
+                    tryCallOnResult()
                 }
             })
     }
+
 
     private fun parseErrorBody(response: Response<*>): ApiErrorResponse? {
         return try {

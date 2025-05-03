@@ -1,12 +1,12 @@
 package com.example.weather_app.tools
 
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 fun isCurrentHour(targetTimeStr: String): Boolean {
     return try {
-        val targetTime = ZonedDateTime.parse(targetTimeStr, DateTimeFormatter.ISO_DATE_TIME)
-        val currentTime = ZonedDateTime.now(targetTime.zone)
+        val targetTime = LocalDateTime.parse(targetTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+        val currentTime = LocalDateTime.now()
         currentTime.year == targetTime.year &&
                 currentTime.month == targetTime.month &&
                 currentTime.dayOfMonth == targetTime.dayOfMonth &&
@@ -18,8 +18,9 @@ fun isCurrentHour(targetTimeStr: String): Boolean {
 
 fun isCurrentMinute(targetTimeStr: String): Boolean {
     return try {
-        val targetTime = ZonedDateTime.parse(targetTimeStr, DateTimeFormatter.ISO_DATE_TIME)
-        val currentTime = ZonedDateTime.now(targetTime.zone)
+        val targetTime = LocalDateTime.parse(targetTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+        val currentTime = LocalDateTime.now()
+
         currentTime.year == targetTime.year &&
                 currentTime.month == targetTime.month &&
                 currentTime.dayOfMonth == targetTime.dayOfMonth &&

@@ -14,6 +14,7 @@ import androidx.work.WorkManager
 import com.example.weather_app.Helpers.LocationHelper
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
+import com.example.weather_app.Models.NowData
 import com.example.weather_app.dataBase.CityDatabase
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.notifications.NotificationHelper
@@ -87,13 +88,17 @@ class MainActivity : AppCompatActivity() {
         if (intent.hasExtra("FULL_DATA")) {
             val json = intent.getStringExtra("FULL_DATA")
             val cityName = intent.getStringExtra("CITY_NAME") ?: ""
+            val nowData = intent.getStringExtra("NOW_DATA")
 
             json?.let {
-                binding.searchButton.isEnabled = true
-                binding.tempChangeButton.isEnabled = true
-                val fullData = Gson().fromJson(it, FullData::class.java)
-                weatherDataa = fullData
-                updateUI(this, binding, fullData, city = cityName)
+                nowData?.let {
+                    binding.searchButton.isEnabled = true
+                    binding.tempChangeButton.isEnabled = true
+                    val fullData = Gson().fromJson(json, FullData::class.java)
+                    val nowDataa = Gson().fromJson(nowData, NowData::class.java)
+                    weatherDataa = fullData
+                    updateUI(this, binding, fullData, nowDataa, city = cityName)
+                }
             }
         } else if (intent.hasExtra("CITY_NAME")) {
             val cityName = intent.getStringExtra("CITY_NAME")
@@ -101,31 +106,33 @@ class MainActivity : AppCompatActivity() {
                 binding.searchButton.isEnabled = true
                 binding.tempChangeButton.isEnabled = true
                 binding.progressBar.visibility = View.VISIBLE
-                weatherRepository.fetchWeatherData(it) { weatherData ->
+                weatherRepository.fetchWeatherData(it) { weatherData, now ->
                     runOnUiThread {
                         binding.progressBar.visibility = View.GONE
                         weatherData?.let {
-                            weatherDataa = it
-                            updateUI(this, binding, it, city = cityName)
+                            now?.let {
+                                weatherDataa = weatherData
+                                updateUI(this, binding, weatherData, it, city = cityName)
+                            }
                         }
                     }
                 }
             }
         } else {
             binding.progressBar.visibility = View.VISIBLE
-
             locationHelper.requestLocationPermission {
                 locationHelper.getCurrentLocation { lat, lon ->
                     runOnUiThread {
-                        weatherRepository.fetchWeatherData("$lat, $lon") { weatherData ->
+                        weatherRepository.fetchWeatherData("$lat, $lon") { weatherData, now ->
                             binding.searchButton.isEnabled = true
                             binding.tempChangeButton.isEnabled = true
                             binding.progressBar.visibility = View.GONE
                             weatherData?.let {
-                                weatherDataa = it
-                                updateUI(this, binding, it, isLocation = true)
-                                binding.locationImage.visibility = View.VISIBLE
-
+                                now?.let {
+                                    weatherDataa = weatherData
+                                    updateUI(this, binding, weatherData, it, isLocation = true)
+                                    binding.locationImage.visibility = View.VISIBLE
+                                }
                             }
                         }
                     }

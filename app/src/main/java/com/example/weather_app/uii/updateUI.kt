@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
+import com.example.weather_app.Models.NowData
 import com.example.weather_app.Models.VDaysForecast
 import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.Models.tempcard
@@ -13,7 +14,6 @@ import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.tools.addWeatherIfNotExists
 import com.example.weather_app.tools.getWeatherStatus
 import com.example.weather_app.tools.isCurrentHour
-import com.example.weather_app.tools.isCurrentMinute
 import com.example.weather_app.tools.parseDateTime
 import getFullLocationName
 import getLocationName
@@ -23,10 +23,10 @@ fun updateUI(
     context: Context,
     binding: ActivityMainBinding,
     weatherData: FullData,
+    nowData: NowData,
     isLocation: Boolean = false,
     city: String = ""
 ) {
-    var i = 0
     var h = 0
     val tempList = arrayListOf<tempcard>()
     val daysList = arrayListOf<VDaysForecast>()
@@ -47,7 +47,7 @@ fun updateUI(
     val isCelsius = SharedPrefHelper.getTemperatureUnit(context)
 
     while (true) {
-        if (isCurrentHour(hourlyData[i].date)) {
+        if (isCurrentHour(hourlyData[h].date)) {
             break
         }
         h++
@@ -56,26 +56,19 @@ fun updateUI(
     // Update UI elements
     binding.TempDayMonth.text = parseDateTime(hourlyData[h].date).formattedDateWithDay
     val weatherStatus = getWeatherStatus(
-        hourlyData[h].values.weatherCode.toInt(),
-        parseDateTime(hourlyData[h].date).time24
+        nowData.data.values.weatherCode.toInt(),
+        parseDateTime(nowData.data.date).time24
     )
     binding.TempDescribe.text = weatherStatus.first
     binding.TempImage.setImageResource(weatherStatus.third)
 
-    while (true) {
-        if (isCurrentMinute(minutelyData[i].date)) {
-            break
-        }
-        i++
-    }
-
-    binding.HumidityValue.text = "${minutelyData[i].values.humidity} %"
-    binding.WindSpeedValue.text = "${minutelyData[i].values.windSpeed} m/s"
-    binding.WindGustValue.text = "${minutelyData[i].values.windGust} m/s"
-    binding.WindDirectionValue.text = "${minutelyData[i].values.windDirection}°"
-    binding.RainIntensityValue.text = "${minutelyData[i].values.rainIntensity} mm/h"
-    binding.VisibilityValue.text = "${minutelyData[i].values.visibility} km"
-    binding.VisibilityDesc.text = getVisibilityDescription(minutelyData[i].values.visibility)
+    binding.HumidityValue.text = "${nowData.data.values.humidity} %"
+    binding.WindSpeedValue.text = "${nowData.data.values.windSpeed} m/s"
+    binding.WindGustValue.text = "${nowData.data.values.windGust} m/s"
+    binding.WindDirectionValue.text = "${nowData.data.values.windDirection}°"
+    binding.RainIntensityValue.text = "${nowData.data.values.rainIntensity} mm/h"
+    binding.VisibilityValue.text = "${nowData.data.values.visibility} km"
+    binding.VisibilityDesc.text = getVisibilityDescription(nowData.data.values.visibility)
 
     if (city == "") {
         getFullLocationName(context, lat, lon) { locationName ->
@@ -84,9 +77,10 @@ fun updateUI(
         getLocationName(context, lat, lon) { locationName ->
             val newHistory = WeatherData(
                 weatherData,
+                nowData,
                 locationName,
-                hourlyData[h].values.tempCelsius.toInt().toString(),
-                hourlyData[h].values.tempFahrenheit.toInt().toString(),
+                nowData.data.values.tempCelsius.toInt().toString(),
+                nowData.data.values.tempFahrenheit.toInt().toString(),
                 weatherStatus.first,
                 weatherStatus.second,
                 isLocation
@@ -98,6 +92,7 @@ fun updateUI(
 
         val newHistory = WeatherData(
             weatherData,
+            nowData,
             city,
             hourlyData[h].values.tempCelsius.toInt().toString(),
             hourlyData[h].values.tempFahrenheit.toInt().toString(),
@@ -109,69 +104,47 @@ fun updateUI(
     }
 
 
-    if (isCelsius) {
-        binding.TempValue.text = "${hourlyData[h].values.tempCelsius.toInt()}°C"
-        binding.TempHValue.text = "H: ${dailyData[0].values.maxTempCelsius.toInt()}°C"
-        binding.TempLValue.text = "L: ${dailyData[0].values.minTempCelsius.toInt()}°C"
+    val unit = if (isCelsius) "°C" else "°F"
 
-        // Populate RecyclerView lists
-        for (hourly in hourlyData.drop(2).take(24)) {
-            tempList.add(
-                tempcard(
-                    getWeatherStatus(
-                        hourly.values.weatherCode.toInt(),
-                        parseDateTime(hourly.date).time24
-                    ).second,
-                    "${hourly.values.tempCelsius.toInt()}°C",
-                    parseDateTime(hourly.date).time12
-                )
-            )
-        }
-        for (i in 1 until dailyData.size) {
-            daysList.add(
-                VDaysForecast(
-                    getWeatherStatus(
-                        dailyData[i].values.weatherCodeMax!!.toInt(),
-                        parseDateTime(dailyData[i].date).time24
-                    ).second,
-                    "${dailyData[i].values.avgTempCelsius.toInt()}°C",
-                    parseDateTime(dailyData[i].date).date,
-                    parseDateTime(dailyData[i].date).dayName,
-                )
-            )
-        }
-    } else {
-        binding.TempValue.text = "${hourlyData[h].values.tempFahrenheit.toInt()}°F"
-        binding.TempHValue.text = "H: ${dailyData[0].values.maxTempFahrenheit.toInt()}°F"
-        binding.TempLValue.text = "L: ${dailyData[0].values.minTempFahrenheit.toInt()}°F"
+    val nowTemp =
+        if (isCelsius) nowData.data.values.tempCelsius else nowData.data.values.tempFahrenheit
+    val maxTemp =
+        if (isCelsius) dailyData[0].values.maxTempCelsius else dailyData[0].values.maxTempFahrenheit
+    val minTemp =
+        if (isCelsius) dailyData[0].values.minTempCelsius else dailyData[0].values.minTempFahrenheit
 
-        // Populate RecyclerView lists
-        for (hourly in hourlyData.drop(2).take(24)) {
-            tempList.add(
-                tempcard(
-                    getWeatherStatus(
-                        hourly.values.weatherCode.toInt(),
-                        parseDateTime(hourly.date).time24
-                    ).second,
-                    "${hourly.values.tempFahrenheit.toInt()}°F",
-                    parseDateTime(hourly.date).time12
-                )
+    binding.TempValue.text = "${nowTemp.toInt()}$unit"
+    binding.TempHValue.text = "H: ${maxTemp.toInt()}$unit"
+    binding.TempLValue.text = "L: ${minTemp.toInt()}$unit"
+
+// Populate hourly list
+    hourlyData.drop(2).take(24).forEach { hourly ->
+        val temp = if (isCelsius) hourly.values.tempCelsius else hourly.values.tempFahrenheit
+        val parsedTime = parseDateTime(hourly.date)
+        tempList.add(
+            tempcard(
+                getWeatherStatus(hourly.values.weatherCode.toInt(), parsedTime.time24).second,
+                "${temp.toInt()}$unit",
+                parsedTime.time12
             )
-        }
-        for (i in 1 until dailyData.size) {
-            daysList.add(
-                VDaysForecast(
-                    getWeatherStatus(
-                        dailyData[i].values.weatherCodeMax!!.toInt(),
-                        parseDateTime(dailyData[i].date).time24
-                    ).second,
-                    "${dailyData[i].values.avgTempFahrenheit.toInt()}°F",
-                    parseDateTime(dailyData[i].date).date,
-                    parseDateTime(dailyData[i].date).dayName,
-                )
-            )
-        }
+        )
     }
+
+// Populate daily forecast list
+    for (i in 1 until dailyData.size) {
+        val day = dailyData[i]
+        val avgTemp = if (isCelsius) day.values.avgTempCelsius else day.values.avgTempFahrenheit
+        val parsed = parseDateTime(day.date)
+        daysList.add(
+            VDaysForecast(
+                getWeatherStatus(day.values.weatherCodeMax!!.toInt(), parsed.time24).second,
+                "${avgTemp.toInt()}$unit",
+                parsed.date,
+                parsed.dayName,
+            )
+        )
+    }
+
 
     // Update existing adapters instead of resetting them
     (binding.TempRV.adapter as? TempCard_Adapter)?.apply {

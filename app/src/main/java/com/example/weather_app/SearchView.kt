@@ -68,6 +68,7 @@ class SearchView : AppCompatActivity() {
             val json = Gson().toJson(selectedItem.fullData)
             intent.putExtra("FULL_DATA", json)
             intent.putExtra("CITY_NAME", selectedItem.cityName)
+            intent.putExtra("NOW_DATA", Gson().toJson(selectedItem.nowData))
             startActivity(intent)
             ActivityCompat.finishAffinity(this)
         }

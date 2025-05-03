@@ -14,30 +14,32 @@ fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
     for ((index, weatherDataa) in weatherList.withIndex()) {
         val city = weatherDataa.cityName
 
-        weatherRepository.fetchWeatherData(city) { weatherData ->
+        weatherRepository.fetchWeatherData(city) { weatherData, now ->
             weatherData?.let {
-                val weatherStatus = getWeatherStatus(
-                    weatherData.timelines.hourly[2].values.weatherCode.toInt(),
-                    parseDateTime(weatherData.timelines.hourly[2].date).time24
-                )
-                // Update the list with a new object
-                weatherList[index] = weatherDataa.copy(
-                    tempCelsius = "${weatherData.timelines.hourly[2].values.tempCelsius.toInt()}",
-                    fullData = weatherData,
-                    description = weatherStatus.first,
-                    icon = weatherStatus.second,
-                    tempFahrenheit = "${weatherData.timelines.hourly[2].values.tempFahrenheit.toInt()}"
-                )
+                now?.let {
+                    val weatherStatus = getWeatherStatus(
+                        now.data.values.weatherCode.toInt(),
+                        parseDateTime(now.data.date).time24
+                    )
+                    // Update the list with a new object
+                    weatherList[index] = weatherDataa.copy(
+                        tempCelsius = "${now.data.values.tempCelsius.toInt()}",
+                        fullData = weatherData,
+                        description = weatherStatus.first,
+                        icon = weatherStatus.second,
+                        tempFahrenheit = "${now.data.values.tempFahrenheit.toInt()}"
+                    )
 
-                // Save the updated list (optional)
-                SharedPrefHelper.saveWeatherList(context, weatherList)
+                    // Save the updated list (optional)
+                    SharedPrefHelper.saveWeatherList(context, weatherList)
 
-                // Ensure the adapter recognizes the update
-                binding.recycler.adapter?.let { adapter ->
-                    if (adapter is WeatherAdapter) {
-                        adapter.updateData(weatherList)  // Call update function in adapter
-                    } else {
-                        adapter.notifyItemChanged(index)
+                    // Ensure the adapter recognizes the update
+                    binding.recycler.adapter?.let { adapter ->
+                        if (adapter is WeatherAdapter) {
+                            adapter.updateData(weatherList)  // Call update function in adapter
+                        } else {
+                            adapter.notifyItemChanged(index)
+                        }
                     }
                 }
             }
