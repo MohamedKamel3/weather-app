@@ -26,8 +26,11 @@ class LocationHelper(private val context: Context) {
     fun requestLocationPermission(onPermissionGranted: () -> Unit) {
         val permissionsToRequest = mutableListOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
         )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionsToRequest.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
 
         // Only add notification permission for Android 13+ (API 33+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -45,7 +48,7 @@ class LocationHelper(private val context: Context) {
                 showDialog(
                     activity,
                     "Permission Required",
-                    "Location permission is needed to use this feature. Please enable it in app settings.",
+                    "Location permission is required . \nPlease make it \"Allow all the time\" in  settings.",
                     {
                         activity.finishAffinity()
                     }

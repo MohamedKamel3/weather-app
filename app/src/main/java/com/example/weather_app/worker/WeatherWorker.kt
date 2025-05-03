@@ -103,6 +103,7 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
                     var i = 0
                     val highTemp: Double
                     val lowTemp: Double
+                    val unit = if (isCelsius) "°C" else "°F"
 
                     while (true) {
                         if (isCurrentHour(it.timelines.hourly[i].date)) {
@@ -129,7 +130,7 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
                     NotificationHelper.showNotification(
                         context,
                         "Weather Alert",
-                        "Today's weather: ${weatherStatus.first}.\nHigh: $highTemp°C, Low: $lowTemp°C",
+                        "Today's weather: ${weatherStatus.first}.\nHigh: $highTemp$unit, Low: $lowTemp$unit",
                         weatherStatus.second
                     )
                 }
