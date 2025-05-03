@@ -82,6 +82,7 @@ fun updateUI(
                 nowData.data.values.tempCelsius.toInt().toString(),
                 nowData.data.values.tempFahrenheit.toInt().toString(),
                 weatherStatus.first,
+                nowData.data.values.weatherCode,
                 weatherStatus.second,
                 isLocation
             )
@@ -97,6 +98,7 @@ fun updateUI(
             hourlyData[h].values.tempCelsius.toInt().toString(),
             hourlyData[h].values.tempFahrenheit.toInt().toString(),
             weatherStatus.first,
+            nowData.data.values.weatherCode,
             weatherStatus.second,
             isLocation
         )

@@ -7,6 +7,7 @@ data class WeatherData(
     var tempCelsius: String,
     val tempFahrenheit: String,
     val description: String,
+    val statusCode: Int,
     val icon: Int,
     val isUserLocation: Boolean = false
 )

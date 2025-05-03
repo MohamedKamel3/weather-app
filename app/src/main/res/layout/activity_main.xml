@@ -96,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
             android:background="@color/black"
+            android:clickable="true"
             app:cardBackgroundColor="#161616"
             app:cardCornerRadius="40sp"
             app:cardElevation="10dp">

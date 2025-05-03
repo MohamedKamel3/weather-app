@@ -15,15 +15,19 @@ import com.example.weather_app.Helpers.LocationHelper
 import com.example.weather_app.Helpers.SharedPrefHelper
 import com.example.weather_app.Models.FullData
 import com.example.weather_app.Models.NowData
+import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.dataBase.CityDatabase
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.notifications.NotificationHelper
 import com.example.weather_app.service.WeatherRepository
+import com.example.weather_app.tools.getWeatherStatus
+import com.example.weather_app.tools.parseDateTime
 import com.example.weather_app.uii.changeTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
 import com.example.weather_app.worker.WeatherWorker
 import com.google.gson.Gson
+import getFullLocationName
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -31,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var weatherRepository: WeatherRepository
     private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
     private lateinit var weatherDataa: FullData
+    private lateinit var nnowData: NowData
+    private lateinit var ccity: String
     private lateinit var worker: WorkManager
 
 
@@ -81,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.searchButton.isEnabled = false
         binding.tempChangeButton.isEnabled = false
+        binding.TempInfo.isEnabled = false
 
         locationHelper = LocationHelper(this)
         weatherRepository = WeatherRepository(apiKey, this)
@@ -94,9 +101,12 @@ class MainActivity : AppCompatActivity() {
                 nowData?.let {
                     binding.searchButton.isEnabled = true
                     binding.tempChangeButton.isEnabled = true
+                    binding.TempInfo.isEnabled = true
                     val fullData = Gson().fromJson(json, FullData::class.java)
                     val nowDataa = Gson().fromJson(nowData, NowData::class.java)
                     weatherDataa = fullData
+                    nnowData = nowDataa
+                    ccity = cityName
                     updateUI(this, binding, fullData, nowDataa, city = cityName)
                 }
             }
@@ -105,6 +115,7 @@ class MainActivity : AppCompatActivity() {
             cityName?.let {
                 binding.searchButton.isEnabled = true
                 binding.tempChangeButton.isEnabled = true
+                binding.TempInfo.isEnabled = true
                 binding.progressBar.visibility = View.VISIBLE
                 weatherRepository.fetchWeatherData(it) { weatherData, now ->
                     runOnUiThread {
@@ -112,6 +123,8 @@ class MainActivity : AppCompatActivity() {
                         weatherData?.let {
                             now?.let {
                                 weatherDataa = weatherData
+                                nnowData = it
+                                ccity = cityName
                                 updateUI(this, binding, weatherData, it, city = cityName)
                             }
                         }
@@ -123,13 +136,20 @@ class MainActivity : AppCompatActivity() {
             locationHelper.requestLocationPermission {
                 locationHelper.getCurrentLocation { lat, lon ->
                     runOnUiThread {
+                        var cityName = ""
+                        getFullLocationName(this, lat, lon) { locationName ->
+                            cityName = locationName
+                        }
                         weatherRepository.fetchWeatherData("$lat, $lon") { weatherData, now ->
                             binding.searchButton.isEnabled = true
                             binding.tempChangeButton.isEnabled = true
+                            binding.TempInfo.isEnabled = true
                             binding.progressBar.visibility = View.GONE
                             weatherData?.let {
                                 now?.let {
                                     weatherDataa = weatherData
+                                    nnowData = it
+                                    ccity = cityName
                                     updateUI(this, binding, weatherData, it, isLocation = true)
                                     binding.locationImage.visibility = View.VISIBLE
                                 }
@@ -144,6 +164,27 @@ class MainActivity : AppCompatActivity() {
 
         binding.searchButton.setOnClickListener {
             val i = Intent(this, SearchView::class.java)
+            startActivity(i)
+        }
+
+        binding.TempInfo.setOnClickListener {
+            val weatherStatus = getWeatherStatus(
+                nnowData.data.values.weatherCode.toInt(),
+                parseDateTime(nnowData.data.date).time24
+            )
+            val weatherDATA = WeatherData(
+                weatherDataa,
+                nnowData,
+                ccity,
+                nnowData.data.values.tempCelsius.toInt().toString(),
+                nnowData.data.values.tempFahrenheit.toInt().toString(),
+                weatherStatus.first,
+                nnowData.data.values.weatherCode,
+                weatherStatus.second,
+            )
+            val i = Intent(this, TipsPage::class.java).apply {
+                putExtra("DATA", Gson().toJson(weatherDATA))
+            }
             startActivity(i)
         }
 

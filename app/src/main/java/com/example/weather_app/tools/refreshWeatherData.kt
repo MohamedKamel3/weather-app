@@ -26,6 +26,7 @@ fun refreshWeatherData(binding: ActivitySearchViewBinding, apiKey: String) {
                         tempCelsius = "${now.data.values.tempCelsius.toInt()}",
                         fullData = weatherData,
                         description = weatherStatus.first,
+                        statusCode = now.data.values.weatherCode.toInt(),
                         icon = weatherStatus.second,
                         tempFahrenheit = "${now.data.values.tempFahrenheit.toInt()}"
                     )
