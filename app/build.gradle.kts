@@ -91,5 +91,11 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("it.xabaras.android:recyclerview-swipedecorator:1.4")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
+    implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("androidx.glance:glance-material3:1.1.1")
+    implementation("androidx.glance:glance-material:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
 
 }

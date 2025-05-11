@@ -1,13 +1,10 @@
 package com.example.weather_app.worker
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -18,15 +15,18 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.weather_app.Helpers.SharedPrefHelper
+import com.example.weather_app.Models.WeatherData
 import com.example.weather_app.notifications.NotificationHelper
 import com.example.weather_app.service.WeatherRepository
 import com.example.weather_app.tools.getWeatherStatus
+import com.example.weather_app.tools.hasRequiredPermissions
 import com.example.weather_app.tools.isCurrentHour
 import com.example.weather_app.tools.parseDateTime
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import getFullLocationName
 import java.util.concurrent.TimeUnit
 
 class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -42,6 +42,7 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
         LocationServices.getFusedLocationProviderClient(context)
     private val isCelsius = SharedPrefHelper.getTemperatureUnit(context)
 
+    @SuppressLint("MissingPermission")
     override suspend fun doWork(): Result {
         return try {
             val cancellationTokenSource = CancellationTokenSource()
@@ -50,25 +51,7 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
             val context = applicationContext
 
             // Check if we have all required permissions
-            val hasLocationPermission = ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-
-            val hasNotificationPermission =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    ContextCompat.checkSelfPermission(
-                        context, Manifest.permission.POST_NOTIFICATIONS
-                    ) == PackageManager.PERMISSION_GRANTED
-                } else {
-                    true // Pre-Android 13 doesn't need notification permission
-                }
-
-            if (!hasLocationPermission || !hasNotificationPermission) {
-                // Log the missing permissions
-                Log.w(
-                    "WeatherWorker",
-                    "Missing permissions - Location: $hasLocationPermission, Notification: $hasNotificationPermission"
-                )
+            if (!hasRequiredPermissions(context)) {
                 return Result.failure()
             }
 
@@ -100,39 +83,60 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
 
             weatherRepository.fetchWeatherData("$lat,$lon") { weatherData, now ->
                 weatherData?.let {
-                    var i = 0
-                    val highTemp: Double
-                    val lowTemp: Double
-                    val unit = if (isCelsius) "°C" else "°F"
+                    now?.let {
+                        var i = 0
+                        val highTemp: Double
+                        val lowTemp: Double
+                        var city: String = ""
+                        val unit = if (isCelsius) "°C" else "°F"
 
-                    while (true) {
-                        if (isCurrentHour(it.timelines.hourly[i].date)) {
-                            break
+                        while (true) {
+                            if (isCurrentHour(weatherData.timelines.hourly[i].date)) {
+                                break
+                            }
+                            i++
                         }
-                        i++
+
+                        if (isCelsius) {
+                            highTemp =
+                                weatherData.timelines.daily[0].values.maxTempCelsius
+                            lowTemp = weatherData.timelines.daily[0].values.minTempCelsius
+                        } else {
+                            highTemp =
+                                weatherData.timelines.daily[0].values.maxTempFahrenheit
+                            lowTemp = weatherData.timelines.daily[0].values.minTempFahrenheit
+                        }
+
+                        getFullLocationName(context, lat, lon) { locationName ->
+                            city = locationName
+                        }
+
+                        val weatherStatus = getWeatherStatus(
+                            weatherData.timelines.hourly[i].values.weatherCode.toInt(),
+                            parseDateTime(weatherData.timelines.hourly[i].date).time24
+                        )
+                        val weatherDATA = WeatherData(
+                            weatherData,
+                            now,
+                            city,
+                            now.data.values.tempCelsius.toInt().toString(),
+                            now.data.values.tempFahrenheit.toInt().toString(),
+                            weatherStatus.first,
+                            now.data.values.weatherCode,
+                            weatherStatus.second,
+                        )
+
+                        SharedPrefHelper.saveCurrentLocationWeather(context, weatherDATA)
+                        SharedPrefHelper.saveNowCurrentLocationWeather(context, now)
+
+                        NotificationHelper.showNotification(
+                            context,
+                            weatherDATA,
+                            "Weather Alert",
+                            "Today's weather: ${weatherStatus.first}.\nHigh: $highTemp$unit, Low: $lowTemp$unit \nclick to see more Tips",
+                            weatherStatus.second
+                        )
                     }
-
-                    if (isCelsius) {
-                        highTemp =
-                            it.timelines.daily[0].values.maxTempCelsius
-                        lowTemp = it.timelines.daily[0].values.minTempCelsius
-                    } else {
-                        highTemp =
-                            it.timelines.daily[0].values.maxTempFahrenheit
-                        lowTemp = it.timelines.daily[0].values.minTempFahrenheit
-                    }
-
-                    val weatherStatus = getWeatherStatus(
-                        it.timelines.hourly[i].values.weatherCode.toInt(),
-                        parseDateTime(it.timelines.hourly[i].date).time24
-                    )
-
-                    NotificationHelper.showNotification(
-                        context,
-                        "Weather Alert",
-                        "Today's weather: ${weatherStatus.first}.\nHigh: $highTemp$unit, Low: $lowTemp$unit",
-                        weatherStatus.second
-                    )
                 }
             }
 
@@ -164,7 +168,7 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
             // Ensure only one instance of this work exists
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_TAG,
-                ExistingPeriodicWorkPolicy.KEEP, // Or REPLACE if you want to update parameters
+                ExistingPeriodicWorkPolicy.REPLACE, // Or REPLACE if you want to update parameters
                 workRequest
             )
         }

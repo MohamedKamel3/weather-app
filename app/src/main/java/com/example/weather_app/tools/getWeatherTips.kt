@@ -3,68 +3,91 @@ package com.example.weather_app.tools
 import android.content.Context
 import com.example.weather_app.Models.WeatherData
 
-// Function to generate tips based on weather
 fun getWeatherTips(context: Context, weather: WeatherData): List<String> {
     val tips = mutableListOf<String>()
+
+    // Temperature-based tips
     when {
         weather.tempCelsius.toDouble() < 0 -> {
-            tips.add("Wear heavy winter clothing and stay warm.")
+            tips.add("Wear heavy winter clothing including gloves, a scarf, and a hat.")
+            tips.add("Limit time spent outdoors to avoid frostbite.")
             tips.add("Watch out for icy roads and sidewalks.")
         }
 
         weather.tempCelsius.toDouble() in 0.0..15.0 -> {
-            tips.add("A jacket or sweater is recommended.")
-            tips.add("Consider layered clothing for comfort.")
+            tips.add("Wear a jacket or a warm sweater.")
+            tips.add("Layer clothing for added comfort and flexibility.")
+            tips.add("It might feel colder with wind; wear windproof outerwear.")
         }
 
-        weather.tempCelsius.toDouble() > 15 -> {
+        weather.tempCelsius.toDouble() in 15.1..25.0 -> {
             tips.add("Light clothing is suitable for this weather.")
-            tips.add("Stay hydrated and use sunscreen if sunny.")
+            tips.add("Stay hydrated and wear breathable fabrics.")
+            tips.add("Take short breaks in the shade if outdoors for long.")
+        }
+
+        weather.tempCelsius.toDouble() > 25 -> {
+            tips.add("Wear light, breathable clothing and avoid dark colors.")
+            tips.add("Drink plenty of water to stay hydrated.")
+            tips.add("Avoid strenuous activities during peak sun hours (12–3 PM).")
         }
     }
 
+    // Status code-based tips
     when (weather.statusCode) {
-        // Clear/Sunny weather (1000)
-        1000 -> tips.add("Wear sunglasses and a hat for sun protection.")
+        // Clear/Sunny
+        1000 -> {
+            tips.add("Wear sunglasses and a hat to protect against UV rays.")
+            tips.add("Apply sunscreen with SPF 30+ even if it doesn't feel hot.")
+        }
 
-        // Rain-related weather (4000, 4001, 4200, 4201)
+        // Rain
         in listOf(4000, 4001, 4200, 4201) -> {
-            tips.add("Bring an umbrella or wear a raincoat.")
-            tips.add("Avoid flooded areas and drive carefully.")
+            tips.add("Carry a waterproof umbrella or raincoat.")
+            tips.add("Wear waterproof shoes to avoid soggy socks.")
+            tips.add("Watch for slippery surfaces and puddles.")
         }
 
-        // Cloudy weather (1101, 1102, 1001)
-        in listOf(1101, 1102, 1001) -> tips.add("Expect cooler temperatures; carry a light jacket.")
+        // Cloudy
+        in listOf(1101, 1102, 1001) -> {
+            tips.add("Expect cooler temperatures; carry a light jacket.")
+            tips.add("Sunlight may still be strong; sunscreen is still useful.")
+        }
 
-        // Snow-related weather (5000, 5001, 5100, 5101)
+        // Snow
         in listOf(5000, 5001, 5100, 5101) -> {
-            tips.add("Wear insulated boots and gloves.")
-            tips.add("Drive slowly to avoid skidding.")
+            tips.add("Wear insulated boots, gloves, and a winter hat.")
+            tips.add("Shovel driveways and paths early to prevent ice buildup.")
+            tips.add("Avoid unnecessary driving; roads may be slippery.")
         }
 
-        // Thunderstorm (8000)
+        // Thunderstorm
         8000 -> {
-            tips.add("Stay indoors if possible to avoid lightning.")
-            tips.add("Secure outdoor items against strong winds.")
+            tips.add("Stay indoors to avoid lightning hazards.")
+            tips.add("Unplug electronic devices during severe storms.")
+            tips.add("Secure loose outdoor items like trash bins or garden furniture.")
         }
 
-        // Freezing rain (6000, 6001, 6200, 6201)
+        // Freezing Rain
         in listOf(6000, 6001, 6200, 6201) -> {
-            tips.add("Be extremely careful - surfaces may be icy.")
-            tips.add("Avoid unnecessary travel.")
+            tips.add("Use salt or sand on walkways to prevent slipping.")
+            tips.add("Avoid driving unless absolutely necessary.")
         }
 
-        // Fog (2000, 2100)
+        // Fog
         in listOf(2000, 2100) -> {
-            tips.add("Use low-beam headlights when driving.")
-            tips.add("Allow extra travel time for reduced visibility.")
+            tips.add("Drive slowly with low-beam headlights.")
+            tips.add("Avoid sudden braking or lane changes.")
+            tips.add("Use fog lights if available.")
         }
 
-        // Ice pellets (7000, 7101, 7102)
+        // Ice Pellets
         in listOf(7000, 7101, 7102) -> {
-            tips.add("Wear protective eyewear if going outside.")
-            tips.add("Watch for icy patches on walkways.")
+            tips.add("Avoid going outside during heavy ice pellet fall.")
+            tips.add("Protect your eyes with glasses or goggles.")
+            tips.add("Stay alert for slippery spots and drive cautiously.")
         }
     }
+
     return tips
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
+    private val apiKey = "b4gSwmBe99xJKFzyHe9uwXJktj1pWoYa"
     private lateinit var weatherDataa: FullData
     private lateinit var nnowData: NowData
     private lateinit var ccity: String
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         NotificationHelper.createChannel(this)
 
         worker = WorkManager.getInstance(this)
+
         if (WeatherWorker.isWorkScheduled(this)) {
             Log.d("WeatherWorker", "Work scheduled")
         } else {
@@ -111,7 +113,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } else if (intent.hasExtra("CITY_NAME")) {
-            val cityName = intent.getStringExtra("CITY_NAME")
+            val cityName: String? = if (intent.hasExtra("LAT_LON")) {
+                intent.getStringExtra("LAT_LON")
+            } else {
+                intent.getStringExtra("CITY_NAME")
+            }
             cityName?.let {
                 binding.searchButton.isEnabled = true
                 binding.tempChangeButton.isEnabled = true
@@ -125,7 +131,14 @@ class MainActivity : AppCompatActivity() {
                                 weatherDataa = weatherData
                                 nnowData = it
                                 ccity = cityName
-                                updateUI(this, binding, weatherData, it, city = cityName)
+                                updateUI(
+                                    context = this,
+                                    binding = binding,
+                                    weatherData = weatherData,
+                                    nowData = it,
+                                    city = if (intent.hasExtra("LAT_LON")) "" else cityName,
+                                    isLocation = false
+                                )
                             }
                         }
                     }
@@ -199,8 +212,22 @@ class MainActivity : AppCompatActivity() {
             binding.changeDG.text = if (newIsCelsius) "°F" else "°C"
 
             // Call the function with the new state
-            changeTemperatureUnits(binding, newIsCelsius, weatherDataa)
+            changeTemperatureUnits(binding, newIsCelsius, weatherDataa, nnowData)
         }
 
+    }
+
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Exit App")
+        builder.setMessage("Are you sure you want to exit the app?")
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            dialog.dismiss()
+            finishAffinity()
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 }

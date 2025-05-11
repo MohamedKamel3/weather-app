@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import com.example.weather_app.MainActivity
 import com.example.weather_app.Models.ApiErrorResponse
 import com.example.weather_app.Models.FullData
@@ -19,7 +18,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 // API Keys : 1-(qKOYd50CTMxrNbd9jkDyQfRLPqWCQhuk)   2-(JOjnQGyQdlHRtfnbRF6y2goDoXuw5Rjo)   3-(ubVT0xEPW2zXCuo33S3GiAma6u71eCZy)
+//            4-(5mmR90Cwo9k6nOPVpVFxLwPzsMChD6F2)   3-(b4gSwmBe99xJKFzyHe9uwXJktj1pWoYa)
 class WeatherRepository(private val apiKey: String, private val binding: Context) {
+
+    private var fullData: FullData? = null
+    private var nowData: NowData? = null
+
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.tomorrow.io/v4/weather/")
@@ -32,9 +36,6 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
         locationQuery: String,
         onResult: (FullData?, NowData?) -> Unit
     ) {
-        var fullData: FullData? = null
-        var nowData: NowData? = null
-
         var fullDataReceived = false
         var dayInfoReceived = false
 
@@ -44,6 +45,21 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
             }
         }
 
+        fetchFullWeatherData(locationQuery) {
+            fullDataReceived = true
+            tryCallOnResult()
+        }
+
+        fetchWeatherDataNow(locationQuery) {
+            dayInfoReceived = true
+            tryCallOnResult()
+        }
+    }
+
+    fun fetchFullWeatherData(
+        locationQuery: String,
+        onComplete: (FullData?) -> Unit
+    ) {
         weatherService.getWeatherData(locationQuery, apiKey)
             .enqueue(object : Callback<FullData> {
                 override fun onResponse(call: Call<FullData>, response: Response<FullData>) {
@@ -68,22 +84,34 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
                             }
                         )
                     }
-                    fullDataReceived = true
-                    tryCallOnResult()
+                    onComplete(fullData)
                 }
 
                 override fun onFailure(call: Call<FullData>, t: Throwable) {
                     Log.e("WeatherAPI", "Network Failure: ${t.localizedMessage}")
-                    Toast.makeText(
+                    showDialog(
                         binding,
+                        "Error",
                         "Network error: ${t.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    fullDataReceived = true
-                    tryCallOnResult()
+                        {
+                            val i = Intent(binding, SearchView::class.java)
+                            binding.startActivity(i)
+                            (binding as? Activity)?.finishAffinity()
+                        },
+                        {
+                            val i = Intent(binding, MainActivity::class.java)
+                            binding.startActivity(i)
+                            (binding as? Activity)?.finishAffinity()
+                        }
+                    )
                 }
             })
+    }
 
+    fun fetchWeatherDataNow(
+        locationQuery: String,
+        onComplete: (NowData?) -> Unit
+    ) {
         weatherService.getWeatherDataNow(locationQuery, apiKey)
             .enqueue(object : Callback<NowData> {
                 override fun onResponse(call: Call<NowData>, response: Response<NowData>) {
@@ -108,23 +136,30 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
                             }
                         )
                     }
-                    dayInfoReceived = true
-                    tryCallOnResult()
+                    onComplete(nowData)
                 }
 
                 override fun onFailure(call: Call<NowData>, t: Throwable) {
                     Log.e("WeatherAPI", "Network Failure: ${t.localizedMessage}")
-                    Toast.makeText(
+
+                    showDialog(
                         binding,
+                        "Error",
                         "Network error: ${t.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    dayInfoReceived = true
-                    tryCallOnResult()
+                        {
+                            val i = Intent(binding, SearchView::class.java)
+                            binding.startActivity(i)
+                            (binding as? Activity)?.finishAffinity()
+                        },
+                        {
+                            val i = Intent(binding, MainActivity::class.java)
+                            binding.startActivity(i)
+                            (binding as? Activity)?.finishAffinity()
+                        }
+                    )
                 }
             })
     }
-
 
     private fun parseErrorBody(response: Response<*>): ApiErrorResponse? {
         return try {
@@ -135,6 +170,4 @@ class WeatherRepository(private val apiKey: String, private val binding: Context
             null
         }
     }
-
-
 }

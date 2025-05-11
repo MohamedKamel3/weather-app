@@ -2,6 +2,7 @@ package com.example.weather_app.uii
 
 import android.app.Activity
 import com.example.weather_app.Models.FullData
+import com.example.weather_app.Models.NowData
 import com.example.weather_app.Models.VDaysForecast
 import com.example.weather_app.Models.tempcard
 import com.example.weather_app.adapters.Forecast_Adapter
@@ -13,7 +14,8 @@ import com.example.weather_app.tools.parseDateTime
 fun changeTemperatureUnits(
     binding: ActivityMainBinding,
     isCelsius: Boolean,
-    weatherData: FullData
+    weatherData: FullData,
+    nowData: NowData
 ) {
     val tempList = arrayListOf<tempcard>()
     val daysList = arrayListOf<VDaysForecast>()
@@ -21,7 +23,7 @@ fun changeTemperatureUnits(
     val dailyData = weatherData.timelines.daily
 
     if (isCelsius) {
-        binding.TempValue.text = "${hourlyData[2].values.tempCelsius.toInt()}°C"
+        binding.TempValue.text = "${nowData.data.values.tempCelsius.toInt()}°C"
         binding.TempHValue.text = "H: ${dailyData[0].values.maxTempCelsius.toInt()}°C"
         binding.TempLValue.text = "L: ${dailyData[0].values.minTempCelsius.toInt()}°C"
 
@@ -52,7 +54,7 @@ fun changeTemperatureUnits(
             )
         }
     } else {
-        binding.TempValue.text = "${hourlyData[2].values.tempFahrenheit.toInt()}°F"
+        binding.TempValue.text = "${nowData.data.values.tempFahrenheit.toInt()}°F"
         binding.TempHValue.text = "H: ${dailyData[0].values.maxTempFahrenheit.toInt()}°F"
         binding.TempLValue.text = "L: ${dailyData[0].values.minTempFahrenheit.toInt()}°F"
 
@@ -100,6 +102,4 @@ fun changeTemperatureUnits(
         binding.Forecast10DayRV.adapter =
             Forecast_Adapter(binding.root.context as Activity, daysList)
     }
-
-
 }

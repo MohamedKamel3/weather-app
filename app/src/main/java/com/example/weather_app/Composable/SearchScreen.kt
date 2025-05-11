@@ -127,7 +127,11 @@ fun SearchScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredCities) { city ->
                     Log.d("CityItem", "City: $city")
-                    CityItem(city = "${city.name}, ${city.country}", context = context)
+                    CityItem(
+                        city = "${city.name}, ${city.country}",
+                        "${city.lat}, ${city.lon}",
+                        context = context
+                    )
                 }
             }
         }

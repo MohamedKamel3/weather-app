@@ -17,7 +17,7 @@ import com.example.weather_app.MainActivity
 
 
 @Composable
-fun CityItem(city: String, context: Context) {
+fun CityItem(city: String, latLon: String, context: Context) {
     Column(
         modifier = Modifier
             .padding(vertical = 8.dp)
@@ -27,9 +27,7 @@ fun CityItem(city: String, context: Context) {
                     // Create intent
                     val intent = Intent(context, MainActivity::class.java).apply {
                         putExtra("CITY_NAME", cityName)
-                        // Alternative with Gson if you need complex objects:
-                        // val gson = Gson()
-                        // putExtra("CITY_NAME", gson.toJson(cityName))
+                        putExtra("LAT_LON", latLon)
                     }
                     context.startActivity(intent)
                     ActivityCompat.finishAffinity(context as Activity)

@@ -16,7 +16,6 @@ import com.example.weather_app.tools.getWeatherStatus
 import com.example.weather_app.tools.isCurrentHour
 import com.example.weather_app.tools.parseDateTime
 import getFullLocationName
-import getLocationName
 import getVisibilityDescription
 
 fun updateUI(
@@ -70,42 +69,6 @@ fun updateUI(
     binding.VisibilityValue.text = "${nowData.data.values.visibility} km"
     binding.VisibilityDesc.text = getVisibilityDescription(nowData.data.values.visibility)
 
-    if (city == "") {
-        getFullLocationName(context, lat, lon) { locationName ->
-            binding.TempLocation.text = locationName
-        }
-        getLocationName(context, lat, lon) { locationName ->
-            val newHistory = WeatherData(
-                weatherData,
-                nowData,
-                locationName,
-                nowData.data.values.tempCelsius.toInt().toString(),
-                nowData.data.values.tempFahrenheit.toInt().toString(),
-                weatherStatus.first,
-                nowData.data.values.weatherCode,
-                weatherStatus.second,
-                isLocation
-            )
-            SharedPrefHelper.saveCurrentLocationWeather(context, newHistory)
-        }
-    } else {
-        binding.TempLocation.text = city
-
-        val newHistory = WeatherData(
-            weatherData,
-            nowData,
-            city,
-            hourlyData[h].values.tempCelsius.toInt().toString(),
-            hourlyData[h].values.tempFahrenheit.toInt().toString(),
-            weatherStatus.first,
-            nowData.data.values.weatherCode,
-            weatherStatus.second,
-            isLocation
-        )
-        addWeatherIfNotExists(context, newHistory)
-    }
-
-
     val unit = if (isCelsius) "°C" else "°F"
 
     val nowTemp =
@@ -118,6 +81,73 @@ fun updateUI(
     binding.TempValue.text = "${nowTemp.toInt()}$unit"
     binding.TempHValue.text = "H: ${maxTemp.toInt()}$unit"
     binding.TempLValue.text = "L: ${minTemp.toInt()}$unit"
+
+    if (isLocation) {
+        getFullLocationName(context, lat, lon) { locationName ->
+            binding.TempLocation.text = locationName
+            val newHistory = WeatherData(
+                weatherData,
+                nowData,
+                locationName,
+                nowData.data.values.tempCelsius.toInt().toString(),
+                nowData.data.values.tempFahrenheit.toInt().toString(),
+                weatherStatus.first,
+                nowData.data.values.weatherCode,
+                weatherStatus.second,
+                isLocation
+            )
+            SharedPrefHelper.saveCurrentLocationWeather(context, newHistory)
+            SharedPrefHelper.saveNowCurrentLocationWeather(context, nowData)
+        }
+    } else {
+        var newHistory: WeatherData = WeatherData(
+            weatherData,
+            nowData,
+            city,
+            nowData.data.values.tempCelsius.toInt().toString(),
+            nowData.data.values.tempFahrenheit.toInt().toString(),
+            weatherStatus.first,
+            nowData.data.values.weatherCode,
+            weatherStatus.second,
+            isLocation
+        )
+
+        if (city == "") {
+            getFullLocationName(context, lat, lon) { locationName ->
+
+                val locationNamee = locationName.replace(Regex("[^\\p{L}\\s]"), " ").trim()
+                binding.TempLocation.text = locationNamee
+                newHistory = WeatherData(
+                    weatherData,
+                    nowData,
+                    locationNamee,
+                    nowData.data.values.tempCelsius.toInt().toString(),
+                    nowData.data.values.tempFahrenheit.toInt().toString(),
+                    weatherStatus.first,
+                    nowData.data.values.weatherCode,
+                    weatherStatus.second,
+                    isLocation
+                )
+            }
+            addWeatherIfNotExists(context, newHistory)
+        } else {
+            binding.TempLocation.text = city
+
+            newHistory = WeatherData(
+                weatherData,
+                nowData,
+                city,
+                nowData.data.values.tempCelsius.toInt().toString(),
+                nowData.data.values.tempFahrenheit.toInt().toString(),
+                weatherStatus.first,
+                nowData.data.values.weatherCode,
+                weatherStatus.second,
+                isLocation
+            )
+            addWeatherIfNotExists(context, newHistory)
+        }
+    }
+
 
 // Populate hourly list
     hourlyData.drop(2).take(24).forEach { hourly ->

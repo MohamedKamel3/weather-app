@@ -6,7 +6,7 @@ import com.example.weather_app.R
 object WeatherConstants {
     val weatherCodes = mapOf(
         0 to "Unknown",
-        1000 to "Clear, Sunny",
+        1000 to "Clear",
         1100 to "Mostly Clear",
         1101 to "Partly Cloudy",
         1102 to "Mostly Cloudy",
