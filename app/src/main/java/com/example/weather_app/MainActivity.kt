@@ -1,5 +1,6 @@
 package com.example.weather_app
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "b4gSwmBe99xJKFzyHe9uwXJktj1pWoYa"
+    private val apiKey = "YIioHGjF7zENIejDlVpYKw1srgD0bGiU"
     private lateinit var weatherDataa: FullData
     private lateinit var nnowData: NowData
     private lateinit var ccity: String
@@ -217,6 +218,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Exit App")

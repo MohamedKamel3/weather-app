@@ -53,7 +53,7 @@ fun updateUI(
     }
 
     // Update UI elements
-    binding.TempDayMonth.text = parseDateTime(hourlyData[h].date).formattedDateWithDay
+    binding.TempDayMonth.text = parseDateTime(nowData.data.date).formattedDateWithDay
     val weatherStatus = getWeatherStatus(
         nowData.data.values.weatherCode.toInt(),
         parseDateTime(nowData.data.date).time24

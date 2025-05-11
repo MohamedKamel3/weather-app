@@ -36,7 +36,6 @@ import getFullLocationName
 
 class WeatherWidget : GlanceAppWidget() {
 
-
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val isCelsius = SharedPrefHelper.getTemperatureUnit(context)
         val weatherData = SharedPrefHelper.getCurrentLocationWeather(context)
@@ -47,8 +46,8 @@ class WeatherWidget : GlanceAppWidget() {
         var temp: Double? = null
         var hTemp: Double? = null
         var lTemp: Double? = null
+        var time: String = ""
         var icon: Int = R.drawable.a21000_fog_light_small2x
-
 
         if (weatherData != null && now != null) {
             var i = 0
@@ -66,6 +65,7 @@ class WeatherWidget : GlanceAppWidget() {
                 city = locationName
             }
 
+            time = parseDateTime(now.data.date).time24
             weatherStatus = getWeatherStatus(
                 weatherData.fullData.timelines.hourly[i].values.weatherCode.toInt(),
                 parseDateTime(weatherData.fullData.timelines.hourly[i].date).time24
@@ -82,10 +82,7 @@ class WeatherWidget : GlanceAppWidget() {
                 hTemp = weatherData.fullData.timelines.daily[0].values.maxTempFahrenheit
                 lTemp = weatherData.fullData.timelines.daily[0].values.minTempFahrenheit
             }
-
-
         }
-
         // Render the widget with whatever data is available
         provideContent {
             MyContent(city, temp, hTemp, lTemp, weatherStatus.first, icon, unit)
@@ -149,13 +146,17 @@ class WeatherWidget : GlanceAppWidget() {
                 // High Temperature
                 Text(
                     text = "H:${tempH?.toInt() ?: 0}${unit}",
-                    modifier = GlanceModifier.padding(bottom = 8.dp)
+                    modifier = GlanceModifier.padding(bottom = 8.dp),
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Normal)
+
                 )
                 Spacer(GlanceModifier.width(16.dp))
                 // Low Temperature
                 Text(
                     text = "L:${tempL?.toInt() ?: 0}${unit}",
-                    modifier = GlanceModifier.padding(bottom = 8.dp)
+                    modifier = GlanceModifier.padding(bottom = 8.dp),
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Normal)
+
                 )
             }
         }
