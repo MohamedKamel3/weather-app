@@ -15,6 +15,7 @@ import com.example.weather_app.tools.addWeatherIfNotExists
 import com.example.weather_app.tools.getWeatherStatus
 import com.example.weather_app.tools.isCurrentHour
 import com.example.weather_app.tools.parseDateTime
+import com.example.weather_app.widgets.notifyWeatherWidgetUpdate
 import getFullLocationName
 import getVisibilityDescription
 
@@ -24,7 +25,8 @@ fun updateUI(
     weatherData: FullData,
     nowData: NowData,
     isLocation: Boolean = false,
-    city: String = ""
+    city: String = "",
+    isUpdate: Boolean = false
 ) {
     var h = 0
     val tempList = arrayListOf<tempcard>()
@@ -55,8 +57,7 @@ fun updateUI(
     // Update UI elements
     binding.TempDayMonth.text = parseDateTime(nowData.data.date).formattedDateWithDay
     val weatherStatus = getWeatherStatus(
-        nowData.data.values.weatherCode.toInt(),
-        parseDateTime(nowData.data.date).time24
+        nowData.data.values.weatherCode.toInt(), parseDateTime(nowData.data.date).time24
     )
     binding.TempDescribe.text = weatherStatus.first
     binding.TempImage.setImageResource(weatherStatus.third)
@@ -82,45 +83,15 @@ fun updateUI(
     binding.TempHValue.text = "H: ${maxTemp.toInt()}$unit"
     binding.TempLValue.text = "L: ${minTemp.toInt()}$unit"
 
-    if (isLocation) {
-        getFullLocationName(context, lat, lon) { locationName ->
-            binding.TempLocation.text = locationName
-            val newHistory = WeatherData(
-                weatherData,
-                nowData,
-                locationName,
-                nowData.data.values.tempCelsius.toInt().toString(),
-                nowData.data.values.tempFahrenheit.toInt().toString(),
-                weatherStatus.first,
-                nowData.data.values.weatherCode,
-                weatherStatus.second,
-                isLocation
-            )
-            SharedPrefHelper.saveCurrentLocationWeather(context, newHistory)
-            SharedPrefHelper.saveNowCurrentLocationWeather(context, nowData)
-        }
-    } else {
-        var newHistory: WeatherData = WeatherData(
-            weatherData,
-            nowData,
-            city,
-            nowData.data.values.tempCelsius.toInt().toString(),
-            nowData.data.values.tempFahrenheit.toInt().toString(),
-            weatherStatus.first,
-            nowData.data.values.weatherCode,
-            weatherStatus.second,
-            isLocation
-        )
 
-        if (city == "") {
+    if (!isUpdate)
+        if (isLocation) {
             getFullLocationName(context, lat, lon) { locationName ->
-
-                val locationNamee = locationName.replace(Regex("[^\\p{L}\\s]"), " ").trim()
-                binding.TempLocation.text = locationNamee
-                newHistory = WeatherData(
+                binding.TempLocation.text = locationName
+                val newHistory = WeatherData(
                     weatherData,
                     nowData,
-                    locationNamee,
+                    locationName,
                     nowData.data.values.tempCelsius.toInt().toString(),
                     nowData.data.values.tempFahrenheit.toInt().toString(),
                     weatherStatus.first,
@@ -128,12 +99,13 @@ fun updateUI(
                     weatherStatus.second,
                     isLocation
                 )
+                SharedPrefHelper.saveCurrentLocationWeather(context, newHistory)
+                SharedPrefHelper.saveNowCurrentLocationWeather(context, nowData)
             }
-            addWeatherIfNotExists(context, newHistory)
         } else {
             binding.TempLocation.text = city
 
-            newHistory = WeatherData(
+            val newHistory = WeatherData(
                 weatherData,
                 nowData,
                 city,
@@ -146,10 +118,11 @@ fun updateUI(
             )
             addWeatherIfNotExists(context, newHistory)
         }
-    }
 
+    // Trigger widget update
+    notifyWeatherWidgetUpdate(context)
 
-// Populate hourly list
+    // Populate hourly list
     hourlyData.drop(2).take(24).forEach { hourly ->
         val temp = if (isCelsius) hourly.values.tempCelsius else hourly.values.tempFahrenheit
         val parsedTime = parseDateTime(hourly.date)
@@ -162,7 +135,7 @@ fun updateUI(
         )
     }
 
-// Populate daily forecast list
+    // Populate daily forecast list
     for (i in 1 until dailyData.size) {
         val day = dailyData[i]
         val avgTemp = if (isCelsius) day.values.avgTempCelsius else day.values.avgTempFahrenheit

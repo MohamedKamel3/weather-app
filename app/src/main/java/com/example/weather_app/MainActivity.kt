@@ -24,9 +24,9 @@ import com.example.weather_app.notifications.NotificationHelper
 import com.example.weather_app.service.WeatherRepository
 import com.example.weather_app.tools.getWeatherStatus
 import com.example.weather_app.tools.parseDateTime
-import com.example.weather_app.uii.changeTemperatureUnits
 import com.example.weather_app.utils.applyGradientToTemperatureText
 import com.example.weather_app.utils.updateUI
+import com.example.weather_app.widgets.notifyWeatherWidgetUpdate
 import com.example.weather_app.worker.WeatherWorker
 import com.google.gson.Gson
 import getFullLocationName
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "YIioHGjF7zENIejDlVpYKw1srgD0bGiU"
+    private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
     private lateinit var weatherDataa: FullData
     private lateinit var nnowData: NowData
     private lateinit var ccity: String
@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity() {
             val json = intent.getStringExtra("FULL_DATA")
             val cityName = intent.getStringExtra("CITY_NAME") ?: ""
             val nowData = intent.getStringExtra("NOW_DATA")
-
             json?.let {
                 nowData?.let {
                     binding.searchButton.isEnabled = true
@@ -114,11 +113,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } else if (intent.hasExtra("CITY_NAME")) {
-            val cityName: String? = if (intent.hasExtra("LAT_LON")) {
-                intent.getStringExtra("LAT_LON")
-            } else {
-                intent.getStringExtra("CITY_NAME")
-            }
+            val city = intent.getStringExtra("CITY_NAME")
+            val cityName: String? = intent.getStringExtra("LAT_LON")
+
             cityName?.let {
                 binding.searchButton.isEnabled = true
                 binding.tempChangeButton.isEnabled = true
@@ -137,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                                     binding = binding,
                                     weatherData = weatherData,
                                     nowData = it,
-                                    city = if (intent.hasExtra("LAT_LON")) "" else cityName,
+                                    city = city!!,
                                     isLocation = false
                                 )
                             }
@@ -177,11 +174,14 @@ class MainActivity : AppCompatActivity() {
         applyGradientToTemperatureText(binding.TempValue)
 
         binding.searchButton.setOnClickListener {
+            binding.searchButton.isEnabled = false
             val i = Intent(this, SearchView::class.java)
             startActivity(i)
+            binding.searchButton.isEnabled = true
         }
 
         binding.TempInfo.setOnClickListener {
+            binding.TempInfo.isEnabled = false
             val weatherStatus = getWeatherStatus(
                 nnowData.data.values.weatherCode.toInt(),
                 parseDateTime(nnowData.data.date).time24
@@ -200,9 +200,11 @@ class MainActivity : AppCompatActivity() {
                 putExtra("DATA", Gson().toJson(weatherDATA))
             }
             startActivity(i)
+            binding.TempInfo.isEnabled = true
         }
 
         binding.tempChangeButton.setOnClickListener {
+            binding.tempChangeButton.isEnabled = false
             // Get the current unit state
             val isCelsius = SharedPrefHelper.getTemperatureUnit(this)
             // Toggle the state and update the UI
@@ -212,10 +214,18 @@ class MainActivity : AppCompatActivity() {
             // Update the button text based on new state
             binding.changeDG.text = if (newIsCelsius) "°F" else "°C"
 
-            // Call the function with the new state
-            changeTemperatureUnits(binding, newIsCelsius, weatherDataa, nnowData)
-        }
+            // Force immediate UI refresh with existing data
+            weatherDataa.let { data ->
+                nnowData.let { now ->
+                    // Call updateUI which will handle widget update
+                    updateUI(this, binding, data, now, isUpdate = true, city = ccity)
+                }
+            }
+            binding.tempChangeButton.isEnabled = true
 
+            // Trigger widget update
+            notifyWeatherWidgetUpdate(this)
+        }
     }
 
     @SuppressLint("MissingSuperCall")

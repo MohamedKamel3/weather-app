@@ -58,8 +58,10 @@ class SearchView : AppCompatActivity() {
         // Initialize UI components
         SearchView = binding.SearchED
         SearchView.setOnClickListener {
+            SearchView.isEnabled = false
             val intent = Intent(this, SearchPage::class.java)
             startActivity(intent)
+            SearchView.isEnabled = true
         }
 
         weatherList = SharedPrefHelper.getWeatherList(this)
