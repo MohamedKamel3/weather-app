@@ -126,9 +126,10 @@ class MainActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.GONE
                         weatherData?.let {
                             now?.let {
+
                                 weatherDataa = weatherData
                                 nnowData = it
-                                ccity = cityName
+                                ccity = city ?: cityName
                                 updateUI(
                                     context = this,
                                     binding = binding,
