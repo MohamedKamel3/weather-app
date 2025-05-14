@@ -131,7 +131,6 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
 
                         NotificationHelper.showNotification(
                             context,
-                            weatherDATA,
                             "Weather Alert",
                             "Today's weather: ${weatherStatus.first}.\nHigh: $highTemp$unit, Low: $lowTemp$unit \nclick to see more Tips",
                             weatherStatus.second

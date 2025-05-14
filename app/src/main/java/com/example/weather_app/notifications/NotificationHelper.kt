@@ -8,10 +8,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.weather_app.Models.WeatherData
+import com.example.weather_app.MainActivity
 import com.example.weather_app.R
-import com.example.weather_app.TipsPage
-import com.google.gson.Gson
 
 object NotificationHelper {
 
@@ -33,15 +31,12 @@ object NotificationHelper {
     @SuppressLint("MissingPermission")
     fun showNotification(
         context: Context,
-        weatherData: WeatherData,
         title: String,
         content: String,
         icon: Int = R.drawable.b21000_fog_light_large2x
     ) {
 
-        val i = Intent(context, TipsPage::class.java).apply {
-            putExtra("DATA", Gson().toJson(weatherData))
-        }
+        val i = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context, 200, i, PendingIntent.FLAG_IMMUTABLE
         )
