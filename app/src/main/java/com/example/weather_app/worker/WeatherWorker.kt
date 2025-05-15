@@ -125,8 +125,6 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
                             now.data.values.weatherCode,
                             weatherStatus.second,
                         )
-
-                        SharedPrefHelper.saveCurrentLocationWeather(context, weatherDATA)
                         SharedPrefHelper.saveNowCurrentLocationWeather(context, now)
 
                         NotificationHelper.showNotification(

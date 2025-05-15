@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationHelper: LocationHelper
     private lateinit var weatherRepository: WeatherRepository
-    private val apiKey = "ubVT0xEPW2zXCuo33S3GiAma6u71eCZy"
+    private val apiKey = "5mmR90Cwo9k6nOPVpVFxLwPzsMChD6F2"
     private lateinit var weatherDataa: FullData
     private lateinit var nnowData: NowData
     private lateinit var ccity: String
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        var isLocation = false
         NotificationHelper.createChannel(this)
 
         worker = WorkManager.getInstance(this)
@@ -147,6 +148,7 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.VISIBLE
             locationHelper.requestLocationPermission {
                 locationHelper.getCurrentLocation { lat, lon ->
+                    isLocation = true
                     runOnUiThread {
                         var cityName = ""
                         getFullLocationName(this, lat, lon) { locationName ->
@@ -219,7 +221,15 @@ class MainActivity : AppCompatActivity() {
             weatherDataa.let { data ->
                 nnowData.let { now ->
                     // Call updateUI which will handle widget update
-                    updateUI(this, binding, data, now, isUpdate = true, city = ccity)
+                    updateUI(
+                        this,
+                        binding,
+                        data,
+                        now,
+                        isUpdate = true,
+                        isLocation = isLocation,
+                        city = ccity
+                    )
                 }
             }
             binding.tempChangeButton.isEnabled = true
