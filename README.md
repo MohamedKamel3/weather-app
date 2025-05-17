@@ -36,9 +36,12 @@
 <h2 id="tech-stack">🛠 Tech Stack & Tools</h2>
     <ul>
         <li><strong>Development:</strong> Kotlin, Android Studio, Jetpack Compose/XML</li>
-        <li><strong>Networking:</strong> Retrofit + Gson, OkHttp</li>
-        <li><strong>Storage:</strong> Room Database, DataStore</li>
+        <li><strong>Networking:</strong> Retrofit + Gson</li>
+        <li><strong>Storage:</strong> Room Database, DataStore, Shared Preference</li>
         <li><strong>Location Services:</strong> FusedLocationProviderClient</li>
+        <li><strong>Widget:</strong> Glance Widget</li>
+        <li><strong>Notifications:</strong> Work Manager</li>
+
     </ul>
     
 <h2 id="how-it-works">🛠 How It Works</h2>
