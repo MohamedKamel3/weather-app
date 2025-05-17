@@ -11,7 +11,6 @@
     <h1 align="center">Kotlin Weather App</h1>
     
 <p align="center">
-        • <a href="#figma-design">Figma Design</a>
         • <a href="#key-features">Key Features</a>
         • <a href="#tech-stack">Tech Stack & Tools</a>
         • <a href="#how-it-works">How To Use</a>    
@@ -20,11 +19,10 @@
         
  </p>
     
- <img src="app/src/main/res/drawable/pages.png" alt="Design">
+ <img src="app/src/main/assets/main.png" alt="Design">
+  <img src="app/src/main/assets/delete_and_rearrange.png" alt="Design">
+   <img src="app/src/main/assets/widget.png" alt="Design">
    
-    
-<h2 id="figma-design">Figma Design</h2>
-    <img src="app/src/main/res/drawable/screenshot.png" alt="Design">
     
  <h2 id="key-features">📌 Key Features</h2>
     <ul>
