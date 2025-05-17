@@ -41,7 +41,6 @@
         <li><strong>Location Services:</strong> FusedLocationProviderClient</li>
         <li><strong>Widget:</strong> Glance Widget</li>
         <li><strong>Notifications:</strong> Work Manager</li>
-
     </ul>
     
 <h2 id="how-it-works">🛠 How It Works</h2>
