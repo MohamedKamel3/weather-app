@@ -37,7 +37,6 @@
     <ul>
         <li><strong>Development:</strong> Kotlin, Android Studio, Jetpack Compose/XML</li>
         <li><strong>Networking:</strong> Retrofit + Gson, OkHttp</li>
-        <li><strong>State Management:</strong> MVVM, LiveData</li>
         <li><strong>Storage:</strong> Room Database, DataStore</li>
         <li><strong>Location Services:</strong> FusedLocationProviderClient</li>
     </ul>
